@@ -50,8 +50,6 @@ public class Test extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jProgressBar2 = new javax.swing.JProgressBar();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
         ResultPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Result"));
 
         textField1.setEditable(false);
@@ -116,7 +114,6 @@ public class Test extends javax.swing.JFrame {
 
         jProgressBar1.setToolTipText("Overall test time");
         jProgressBar1.setValue(10);
-        jProgressBar1.setString("10%");
         jProgressBar1.setStringPainted(true);
 
         jTextArea1.setColumns(20);

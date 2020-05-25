@@ -103,7 +103,7 @@ public class Home extends javax.swing.JFrame {
         HiScoreValueLabel = new javax.swing.JLabel();
         TestDemoPanel = new javax.swing.JPanel();
         textArea1 = new java.awt.TextArea();
-        jButton1 = new javax.swing.JButton();
+        StartTestButton = new javax.swing.JButton();
         ListTestPanel = new javax.swing.JPanel();
         ListTestScrollPane = new javax.swing.JScrollPane();
         TestList = new java.awt.List();
@@ -484,13 +484,15 @@ public class Home extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jButton1.setBackground(new java.awt.Color(255, 0, 0));
-        jButton1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jButton1.setText("Start");
-        jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        StartTestButton.setBackground(new java.awt.Color(255, 0, 0));
+        StartTestButton.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        StartTestButton.setForeground(new java.awt.Color(255, 255, 255));
+        StartTestButton.setText("Start");
+        StartTestButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        StartTestButton.setEnabled(false);
+        StartTestButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                StartTestButtonActionPerformed(evt);
             }
         });
 
@@ -519,7 +521,7 @@ public class Home extends javax.swing.JFrame {
                                 .addContainerGap())))))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, TestDetailContentPanelLayout.createSequentialGroup()
                 .addContainerGap(273, Short.MAX_VALUE)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(StartTestButton, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         TestDetailContentPanelLayout.setVerticalGroup(
@@ -540,7 +542,7 @@ public class Home extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(TestDemoPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 58, Short.MAX_VALUE)
+                .addComponent(StartTestButton, javax.swing.GroupLayout.DEFAULT_SIZE, 58, Short.MAX_VALUE)
                 .addGap(18, 18, 18))
         );
 
@@ -563,6 +565,16 @@ public class Home extends javax.swing.JFrame {
 
         ListTestPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "List test", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 14))); // NOI18N
 
+        TestList.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                TestListItemStateChanged(evt);
+            }
+        });
+        TestList.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                TestListActionPerformed(evt);
+            }
+        });
         ListTestScrollPane.setViewportView(TestList);
 
         javax.swing.GroupLayout ListTestPanelLayout = new javax.swing.GroupLayout(ListTestPanel);
@@ -949,10 +961,18 @@ public class Home extends javax.swing.JFrame {
         this.ChangeLayoutForTestPanel();
     }//GEN-LAST:event_TestBackButtonActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void StartTestButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StartTestButtonActionPerformed
         Test startTest = new Test();
         startTest.setVisible(true);
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_StartTestButtonActionPerformed
+
+    private void TestListActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TestListActionPerformed
+       
+    }//GEN-LAST:event_TestListActionPerformed
+
+    private void TestListItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_TestListItemStateChanged
+        this.StartTestButton.setEnabled(true);
+    }//GEN-LAST:event_TestListItemStateChanged
     
     private void SetScoreChart(){
         DefaultCategoryDataset chartData = new DefaultCategoryDataset();
@@ -1081,6 +1101,7 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JPanel PreTestPanel;
     private javax.swing.JPanel SettingPanel;
     private javax.swing.JPanel SettingTabPanel;
+    private javax.swing.JButton StartTestButton;
     private javax.swing.JPanel StaticsPanel;
     private javax.swing.JPanel StatisticTabPanel;
     private javax.swing.JPanel TablePanel;
@@ -1102,7 +1123,6 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JPanel UserInformationPanel;
     private javax.swing.JLabel UserNameLabel;
     private javax.swing.JLabel UserNameValueLabel;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
