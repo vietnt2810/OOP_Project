@@ -7,6 +7,10 @@ package oop.view;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import javax.swing.JOptionPane;
+import oop.service.UserService;
+import static oop.utils.Utils.checkRememberMe;
+import static oop.utils.Utils.rememberMe;
 
 /**
  *
@@ -34,7 +38,7 @@ public class Login extends javax.swing.JFrame {
     private void initComponents() {
 
         LoginFrame = new javax.swing.JPanel();
-        jCheckBox1 = new javax.swing.JCheckBox();
+        RememberMeCheckBox = new javax.swing.JCheckBox();
         LoginFormpanel = new javax.swing.JPanel();
         PasswordLabel = new javax.swing.JLabel();
         UserNameLabel = new javax.swing.JLabel();
@@ -52,10 +56,10 @@ public class Login extends javax.swing.JFrame {
         LoginFrame.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         LoginFrame.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
 
-        jCheckBox1.setText("Remember me");
-        jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
+        RememberMeCheckBox.setText("Remember me");
+        RememberMeCheckBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCheckBox1ActionPerformed(evt);
+                RememberMeCheckBoxActionPerformed(evt);
             }
         });
 
@@ -182,7 +186,7 @@ public class Login extends javax.swing.JFrame {
             .addComponent(SignInPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(LoginFrameLayout.createSequentialGroup()
                 .addGap(184, 184, 184)
-                .addComponent(jCheckBox1)
+                .addComponent(RememberMeCheckBox)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addComponent(Logopanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
@@ -194,7 +198,7 @@ public class Login extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(LoginFormpanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jCheckBox1)
+                .addComponent(RememberMeCheckBox)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 41, Short.MAX_VALUE)
                 .addComponent(SignInPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -224,14 +228,32 @@ public class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_SignUpButtonActionPerformed
 
     private void SignInButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SignInButtonActionPerformed
-        Home homeScreen = new Home();
-        homeScreen.setVisible(true);
-        this.setVisible(false);
+        String username = this.UserNameTextField.getText();
+        String password = this.PasswordField.getText();
+        UserService userService;
+       
+        if(username.isEmpty() || password.isEmpty()){
+            JOptionPane.showMessageDialog(LoginFormpanel, "Make sure that all input fields are filled.","ERROR", JOptionPane.WARNING_MESSAGE);
+        }else{
+            userService = new UserService();
+            boolean isValidated = userService.validateLogin(username, password);
+            if(isValidated){
+                if(this.RememberMeCheckBox.isSelected()){
+                    rememberMe(username);
+                }
+                Home homeScreen = new Home();
+                homeScreen.setVisible(true);
+                this.setVisible(false);
+            }else{             
+                JOptionPane.showMessageDialog(LoginFormpanel, "Login Failed","ERROR", JOptionPane.ERROR_MESSAGE);
+                this.PasswordField.setText("");
+            }
+        }
     }//GEN-LAST:event_SignInButtonActionPerformed
 
-    private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
+    private void RememberMeCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RememberMeCheckBoxActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jCheckBox1ActionPerformed
+    }//GEN-LAST:event_RememberMeCheckBoxActionPerformed
 
     /**
      * @param args the command line arguments
@@ -277,11 +299,11 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JPanel Logopanel;
     private javax.swing.JPasswordField PasswordField;
     private javax.swing.JLabel PasswordLabel;
+    private javax.swing.JCheckBox RememberMeCheckBox;
     private javax.swing.JButton SignInButton;
     private javax.swing.JPanel SignInPanel;
     private javax.swing.JButton SignUpButton;
     private javax.swing.JLabel UserNameLabel;
     private javax.swing.JTextField UserNameTextField;
-    private javax.swing.JCheckBox jCheckBox1;
     // End of variables declaration//GEN-END:variables
 }

@@ -6,6 +6,7 @@
 package oop;
 
 import javax.swing.JFrame;
+import static oop.utils.Utils.checkRememberMe;
 import oop.view.Home;
 import oop.view.Login;
 
@@ -19,8 +20,13 @@ public class MiniProjectOOP extends JFrame{
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Login login = new Login();
-        login.setVisible(true);
+        if(checkRememberMe() != null){
+            Home homeScreen = new Home();
+            homeScreen.setVisible(true);
+        }else{
+            Login login = new Login();
+            login.setVisible(true);
+        }
     }
     
 }

@@ -8,7 +8,14 @@ package oop.utils;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -44,5 +51,49 @@ public class Utils {
         return getSelectedImage;
     }
    
+    public static void rememberMe(String username){
+        File file = null;
+        BufferedWriter bw = null;
+        try{
+            file = new File("./txt/remember.txt");
+            if(!file.exists())  file.createNewFile();
+            
+            bw = new BufferedWriter(new FileWriter(file.getAbsolutePath()));
+            bw.write(username);        
+        }catch(IOException e){
+            System.out.println(e.getMessage());
+            System.out.println(e.getStackTrace());
+        }finally{
+            try {
+                bw.close(); 
+            } catch (IOException ex) {
+                Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
     
+    public static String checkRememberMe(){
+        File file = null;
+        Scanner scan = null;
+        try {
+          file = new File("./txt/remember.txt");
+          if(file.exists()){
+            scan = new Scanner(file);
+            try{
+                return scan.nextLine();
+            }catch(Exception e){
+                return null;
+            }
+          }
+        }catch(FileNotFoundException e){
+            return null;
+        }finally{
+            try{
+                scan.close();
+            }catch(NullPointerException e){
+                return null;
+            }
+        }
+        return null;
+    }
 }

@@ -11,9 +11,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import javax.swing.DefaultListModel;
-import javax.swing.JButton;
-import javax.swing.JPanel;
 import static oop.utils.Utils.getImageUrl;
+import static oop.utils.Utils.rememberMe;
 import static oop.utils.Utils.setImageForLabel;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -39,7 +38,7 @@ public class Home extends javax.swing.JFrame {
         this.setResizable(false);
         
         //load avatar cho user
-        setImageForLabel("D:\\IT\\java\\MiniProjectOOP\\img\\logo.png", this.AvatarLabel);
+        setImageForLabel("./img/logo.png", this.AvatarLabel);
         
         //khoi tao chart 
         SetScoreChart();
@@ -954,7 +953,10 @@ public class Home extends javax.swing.JFrame {
     }//GEN-LAST:event_AvatarLabelMousePressed
 
     private void LogoutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_LogoutButtonActionPerformed
-        // TODO add your handling code here:
+        rememberMe("");
+        this.setVisible(false);
+        Login login = new Login();
+        login.setVisible(true);
     }//GEN-LAST:event_LogoutButtonActionPerformed
 
     private void TestBackButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TestBackButtonActionPerformed
