@@ -6,6 +6,8 @@
 package oop;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import static oop.dao.JDBCConnection.getJDBCConnection;
 import static oop.utils.Utils.checkRememberMe;
 import oop.view.Home;
 import oop.view.Login;
@@ -20,7 +22,7 @@ public class MiniProjectOOP extends JFrame{
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        if(checkRememberMe() != null){
+        if(checkRememberMe() != null && getJDBCConnection() != null){
             Home homeScreen = new Home();
             homeScreen.setVisible(true);
         }else{

@@ -44,4 +44,59 @@ public class UserDao {
         }
         return false;
     }
+    public boolean checkExistedUser(String username){
+         Connection conn = null;
+        PreparedStatement prdStatement;
+        String query;
+        try{
+            conn = getJDBCConnection();
+            query = "SELECT COUNT(*) AS number FROM account WHERE username=?";
+            
+            prdStatement = conn.prepareStatement(query);
+            prdStatement.setString(1,username);
+            ResultSet rs = prdStatement.executeQuery();
+            rs.next();
+            if(rs.getInt("number")>0)   return true;
+        }catch(SQLException e){
+            System.out.println("Login failed " + e.getMessage());
+            System.out.println(e.getStackTrace());
+        }finally{
+            try {
+                conn.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(UserDao.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return false;
+    }
+    public boolean addUser(String username, String password){
+        Connection conn = null;
+        PreparedStatement prdStatement;
+        String query;
+        
+        try{
+            conn = getJDBCConnection();
+            if(this.checkExistedUser(username))    return false;
+            
+            query = "INSERT INTO account(username, password) VALUES(?,?)";
+            
+            prdStatement = conn.prepareStatement(query);
+            prdStatement.setString(1,username);
+            prdStatement.setString(2,password);
+            int res = prdStatement.executeUpdate();
+            
+            if(res > 0) return true;
+        }catch(SQLException e){
+            System.out.println("Login failed " + e.getMessage());
+            System.out.println(e.getStackTrace());
+            return false;
+        }finally{
+             try {
+                conn.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(UserDao.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return false;
+    }
 }

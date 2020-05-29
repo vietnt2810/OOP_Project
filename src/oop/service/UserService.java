@@ -19,4 +19,7 @@ public class UserService {
     public boolean validateLogin(String username, String password){
         return userDao.verifyLogin(username, password);
     }
+    public boolean addUser(String username, String password){
+        return userDao.addUser(username, password);
+    }
 }
