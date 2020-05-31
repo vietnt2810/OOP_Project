@@ -5,7 +5,13 @@
  */
 package oop.service;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import oop.dao.UserDao;
+import oop.model.Account;
+import oop.model.User;
 
 /**
  *
@@ -13,13 +19,28 @@ import oop.dao.UserDao;
  */
 public class UserService {
     private UserDao userDao;
+    
     public UserService(){
         userDao = new UserDao();
     }
-    public boolean validateLogin(String username, String password){
-        return userDao.verifyLogin(username, password);
+    
+    public Account validateLogin(String username, String password){
+        User usr;
+        Account acc;  
+        
+        usr = userDao.verifyLogin(username, password);
+        if(usr == null)  return null;
+        acc = new Account(username,password, usr);
+        
+        return acc;
     }
+    
     public boolean addUser(String username, String password){
         return userDao.addUser(username, password);
     }
+    
+    public Account checkExistedUser(String username){
+        return userDao.checkExistedUser(username);
+    }
+    
 }

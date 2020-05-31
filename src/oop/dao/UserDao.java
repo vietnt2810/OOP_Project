@@ -12,51 +12,71 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import static oop.dao.JDBCConnection.getJDBCConnection;
+import oop.model.Account;
+import oop.model.User;
 
 /**
  *
  * @author thao
  */
 public class UserDao {
-    public boolean verifyLogin(String username, String password){
+    public User verifyLogin(String username, String password){
         Connection conn = null;
+        ResultSet rs=null;
         PreparedStatement prdStatement;
         String query;
+        User usr = null;
         try{
             conn = getJDBCConnection();
-            query = "SELECT COUNT(*) AS number FROM account WHERE username=? AND password=?";
+            query = "SELECT *, COUNT(*) AS number FROM account acc "
+                    + "INNER JOIN user usr "
+                    + "ON acc.id = usr.accId "
+                    + "WHERE acc.username=? AND acc.password=?";
             
             prdStatement = conn.prepareStatement(query);
             prdStatement.setString(1,username);
             prdStatement.setString(2,password);
-            ResultSet rs = prdStatement.executeQuery();
+            rs = prdStatement.executeQuery();
             rs.next();
-            if(rs.getInt("number")>0)   return true;
+            if(rs.getInt("number")>0){
+                return usr = new User(rs.getInt("usr.id"), rs.getString("usr.lastName"), rs.getString("usr.lastName"), rs.getInt("usr.usrLevel"));
+            }
         }catch(SQLException e){
             System.out.println("Login failed " + e.getMessage());
             System.out.println(e.getStackTrace());
         }finally{
             try {
+                rs.close();
                 conn.close();
             } catch (SQLException ex) {
                 Logger.getLogger(UserDao.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        return false;
+        return null;
     }
-    public boolean checkExistedUser(String username){
-         Connection conn = null;
+    public Account checkExistedUser(String username){
+        Connection conn = null;
         PreparedStatement prdStatement;
         String query;
+        User usr = null;
+        Account acc = null;
         try{
             conn = getJDBCConnection();
-            query = "SELECT COUNT(*) AS number FROM account WHERE username=?";
+            query = "SELECT *, COUNT(*) AS number FROM account acc "
+                    + "INNER JOIN user usr "
+                    + "ON acc.id = usr.accId "
+                    + "WHERE acc.username=?";
             
             prdStatement = conn.prepareStatement(query);
             prdStatement.setString(1,username);
             ResultSet rs = prdStatement.executeQuery();
             rs.next();
-            if(rs.getInt("number")>0)   return true;
+            if(rs.getInt("number")>0){
+                usr = new User(rs.getInt("usr.id"), rs.getString("usr.lastName"), rs.getString("usr.lastName"), rs.getInt("usr.usrLevel"));
+                String password = rs.getString("acc.password");
+                if(usr == null)  return null;
+                return acc = new Account(username,password, usr);
+            }   
         }catch(SQLException e){
             System.out.println("Login failed " + e.getMessage());
             System.out.println(e.getStackTrace());
@@ -67,7 +87,7 @@ public class UserDao {
                 Logger.getLogger(UserDao.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        return false;
+        return null;
     }
     public boolean addUser(String username, String password){
         Connection conn = null;
@@ -76,7 +96,7 @@ public class UserDao {
         
         try{
             conn = getJDBCConnection();
-            if(this.checkExistedUser(username))    return false;
+            if(this.checkExistedUser(username) != null)    return false;
             
             query = "INSERT INTO account(username, password) VALUES(?,?)";
             

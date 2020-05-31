@@ -5,9 +5,7 @@
  */
 package oop.utils;
 
-import java.awt.Dimension;
 import java.awt.Image;
-import java.awt.Toolkit;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -18,7 +16,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
@@ -96,4 +94,9 @@ public class Utils {
         }
         return null;
     }
+    
+    public static void setTextForLabel(JLabel label, String text){
+        label.setText(text);
+    }
+    
 }

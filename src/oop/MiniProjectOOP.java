@@ -7,6 +7,8 @@ package oop;
 
 import javax.swing.JFrame;
 import static oop.dao.JDBCConnection.getJDBCConnection;
+import oop.model.Account;
+import oop.service.UserService;
 import static oop.utils.Utils.checkRememberMe;
 import oop.view.Home;
 import oop.view.Login;
@@ -21,8 +23,12 @@ public class MiniProjectOOP extends JFrame{
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        if(checkRememberMe() != null && getJDBCConnection() != null){
-            Home homeScreen = new Home();
+        String username = checkRememberMe();
+        Account acc = null;
+        if(username != null && getJDBCConnection() != null){
+            UserService userService = new UserService();
+            acc = userService.checkExistedUser(username);
+            Home homeScreen = new Home(acc);
             homeScreen.setVisible(true);
         }else{
             Login login = new Login();

@@ -10,28 +10,36 @@ package oop.model;
  * @author thao
  */
 public class User {
-    private String userName;
+    private int id;
     private String firstName;
     private String lastName;
-    private int level;
-
-    public User(String userName, String firstName, String lastName, int level) {
-        this.userName = userName;
+    private int level = 1;
+    
+    public User(){
+    }
+    public User(int id) {
+        this.id = id;
+    }
+    public User(int id, String firstName, String lastName) {
+        this(id);
         this.firstName = firstName;
         this.lastName = lastName;
+    }
+    public User(int id, String firstName, String lastName, int level){
+        this(id, firstName, lastName);
         this.level = level;
     }
-
+    
     public String getFullName(){
-        return firstName + " " + lastName;
+        return this.firstName + " " + this.lastName;
     }
     
-    public String getUserName() {
-        return userName;
+    public int getId() {
+        return id;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getFirstName() {
@@ -55,7 +63,10 @@ public class User {
     }
 
     public void setLevel(int level) {
-        this.level = level;
+        if(level > 0 && level <4 )  this.level = level;
+        else
+            System.err.println("0<Level<4");
     }
+    
     
 }

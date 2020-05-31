@@ -9,10 +9,11 @@ import java.awt.CardLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import javax.swing.JOptionPane;
+import oop.model.Account;
+import oop.model.User;
 import oop.service.CheckConnection;
 import oop.service.UserService;
 import static oop.utils.Utils.rememberMe;
-import static oop.utils.Utils.setImageForLabel;
 
 /**
  *
@@ -94,7 +95,7 @@ public class Login extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("You are your own hero");
-        BannerPanel.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 90, -1, 20));
+        BannerPanel.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 90, -1, 20));
 
         jLabel7.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         jLabel7.setForeground(new java.awt.Color(204, 204, 204));
@@ -103,16 +104,16 @@ public class Login extends javax.swing.JFrame {
         jLabel8.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         jLabel8.setForeground(new java.awt.Color(255, 255, 255));
         jLabel8.setText("Plan yourself");
-        BannerPanel.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 110, -1, 30));
+        BannerPanel.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 110, -1, 30));
 
         jLabel13.setFont(new java.awt.Font("Century Gothic", 0, 14)); // NOI18N
         jLabel13.setForeground(new java.awt.Color(255, 255, 255));
         BannerPanel.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, -1, 30));
 
-        jLabel14.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
+        jLabel14.setFont(new java.awt.Font("Arial", 1, 20)); // NOI18N
         jLabel14.setForeground(new java.awt.Color(255, 255, 255));
         jLabel14.setText("CẦN CÙ THÌ BÙ SIÊNG NĂNG");
-        BannerPanel.add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 210, -1, -1));
+        BannerPanel.add(jLabel14, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 210, -1, -1));
 
         Logo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/grap.png"))); // NOI18N
         Logo.setText("jLabel1");
@@ -268,7 +269,7 @@ public class Login extends javax.swing.JFrame {
             }
         });
 
-        jLabel3.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Century Gothic", 1, 24)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(204, 204, 204));
         jLabel3.setText("Sign Up");
 
@@ -357,7 +358,6 @@ public class Login extends javax.swing.JFrame {
             .addGroup(RegisterPanelLayout.createSequentialGroup()
                 .addGap(0, 83, Short.MAX_VALUE)
                 .addGroup(RegisterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel3)
                     .addComponent(jLabel4)
                     .addComponent(RegisterUserName, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jSeparator4, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -376,13 +376,17 @@ public class Login extends javax.swing.JFrame {
                         .addComponent(RegisterConfirmPassword, javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(jSeparator7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 270, Short.MAX_VALUE)))
                 .addGap(0, 84, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, RegisterPanelLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel3)
+                .addGap(180, 180, 180))
         );
         RegisterPanelLayout.setVerticalGroup(
             RegisterPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(RegisterPanelLayout.createSequentialGroup()
-                .addGap(0, 82, Short.MAX_VALUE)
+                .addGap(0, 85, Short.MAX_VALUE)
                 .addComponent(jLabel3)
-                .addGap(51, 51, 51)
+                .addGap(44, 44, 44)
                 .addComponent(jLabel4)
                 .addGap(11, 11, 11)
                 .addComponent(RegisterUserName, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -411,7 +415,7 @@ public class Login extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, RegisterPanelLayout.createSequentialGroup()
                         .addGap(31, 31, 31)
                         .addComponent(SignUpButton, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(0, 98, Short.MAX_VALUE))
+                .addGap(0, 94, Short.MAX_VALUE))
         );
 
         CardPanel.add(RegisterPanel, "card2");
@@ -473,6 +477,7 @@ public class Login extends javax.swing.JFrame {
         String username = this.LoginUserName.getText();
         String password = this.LoginPassword.getText();
         UserService userService;
+        Account acc = null;
         CheckConnection check = new CheckConnection();
         
         if(!check.checkConnection()){
@@ -483,13 +488,13 @@ public class Login extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this.rootPane, "Make sure that all input fields are filled.","ERROR", JOptionPane.WARNING_MESSAGE);
         }else{
             userService = new UserService();
-            boolean isValidated = userService.validateLogin(username, password);
-            if(isValidated){
+            acc = (Account)userService.validateLogin(username, password);
+            if(acc != null){
                 if(this.LoginRememberCheckBox.isSelected()){
                     rememberMe(username);
                 }
                 this.setVisible(false);
-                Home homeScreen = new Home();
+                Home homeScreen = new Home(acc);
                 homeScreen.setVisible(true);
                 
             }else{             
@@ -525,9 +530,10 @@ public class Login extends javax.swing.JFrame {
                 if(this.LoginRememberCheckBox.isSelected()){
                     rememberMe(username);
                 }
-                JOptionPane.showMessageDialog(this.rootPane, "User has been registered","ERROR", JOptionPane.OK_OPTION);
+                JOptionPane.showMessageDialog(this.rootPane, "User has been registered","INFORMATION", JOptionPane.OK_OPTION);
                 this.setVisible(false);
-                Home homeScreen = new Home();
+                
+                Home homeScreen = new Home(userService.checkExistedUser(username));
                 homeScreen.setVisible(true);
                
             }else{

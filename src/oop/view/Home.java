@@ -10,8 +10,13 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import oop.model.Account;
+import static oop.utils.Utils.getImageUrl;
 import static oop.utils.Utils.rememberMe;
+import static oop.utils.Utils.setImageForLabel;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -22,12 +27,16 @@ import org.jfree.data.category.DefaultCategoryDataset;
  * @author proxc
  */
 public class Home extends javax.swing.JFrame {
-    private Object CardPanel;
 
     /**
      * Creates new form Home
      */
-    public Home() {
+    public Home(){
+        JOptionPane.showMessageDialog(this.rootPane, "Authenticating fails","ERROR", JOptionPane.ERROR_MESSAGE);
+        System.exit(-1);
+    }
+    
+    public Home(Account acc) {
         initComponents();
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
@@ -93,8 +102,8 @@ public class Home extends javax.swing.JFrame {
         StudentBackButton = new javax.swing.JLabel();
         StudentNextButton = new javax.swing.JLabel();
         HistoryLable1 = new javax.swing.JLabel();
-        jSeparator2 = new javax.swing.JSeparator();
-        jSeparator3 = new javax.swing.JSeparator();
+        ResetPassButton = new javax.swing.JLabel();
+        EditInfoButton = new javax.swing.JLabel();
         Test = new javax.swing.JPanel();
         TestBackButton = new javax.swing.JLabel();
         TestNextButton = new javax.swing.JLabel();
@@ -129,14 +138,13 @@ public class Home extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("NTT");
-        setAlwaysOnTop(true);
         setAutoRequestFocus(false);
         setBackground(new java.awt.Color(255, 0, 204));
         setLocationByPlatform(true);
         setUndecorated(true);
         setPreferredSize(new java.awt.Dimension(860, 650));
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel1.setBackground(new java.awt.Color(45, 118, 232));
         jPanel1.setMinimumSize(new java.awt.Dimension(860, 600));
         jPanel1.setPreferredSize(new java.awt.Dimension(854, 600));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -159,25 +167,40 @@ public class Home extends javax.swing.JFrame {
         jLabel13.setText("Power up your skill");
         Header.add(jLabel13, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 120, -1, -1));
 
+        exit.setBackground(new java.awt.Color(45, 118, 232));
         exit.setFont(new java.awt.Font("Verdana", 0, 18)); // NOI18N
         exit.setForeground(new java.awt.Color(255, 255, 255));
+        exit.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         exit.setText("X");
+        exit.setOpaque(true);
         exit.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                exitMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                exitMouseExited(evt);
+            }
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 exitMousePressed(evt);
             }
         });
-        Header.add(exit, new org.netbeans.lib.awtextra.AbsoluteConstraints(838, 0, 22, -1));
+        Header.add(exit, new org.netbeans.lib.awtextra.AbsoluteConstraints(830, 0, 30, 30));
 
         jLabel15.setFont(new java.awt.Font("Verdana", 1, 24)); // NOI18N
         jLabel15.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel15.setText("EngFlight");
+        jLabel15.setText("EngROSE");
         Header.add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 80, -1, -1));
 
         jTextField1.setBackground(new java.awt.Color(45, 118, 232));
         jTextField1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jTextField1.setForeground(new java.awt.Color(255, 255, 255));
         jTextField1.setBorder(null);
+        jTextField1.setRequestFocusEnabled(false);
+        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField1ActionPerformed(evt);
+            }
+        });
         Header.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 150, 334, 25));
         Header.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 180, 348, -1));
 
@@ -229,9 +252,9 @@ public class Home extends javax.swing.JFrame {
             .addGroup(LogOutPanelLayout.createSequentialGroup()
                 .addGap(22, 22, 22)
                 .addComponent(LogoutImgLabel)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel2)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
 
         StudentPanel.setBackground(java.awt.SystemColor.controlHighlight);
@@ -289,6 +312,7 @@ public class Home extends javax.swing.JFrame {
 
         TestLabel.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         TestLabel.setForeground(new java.awt.Color(45, 118, 232));
+        TestLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         TestLabel.setText("Test");
 
         TestImgLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/classroom_48px.png"))); // NOI18N
@@ -299,11 +323,9 @@ public class Home extends javax.swing.JFrame {
             TestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(TestPanelLayout.createSequentialGroup()
                 .addGap(46, 46, 46)
-                .addGroup(TestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(TestPanelLayout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addComponent(TestLabel))
-                    .addComponent(TestImgLabel))
+                .addGroup(TestPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(TestImgLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(TestLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(47, Short.MAX_VALUE))
         );
         TestPanelLayout.setVerticalGroup(
@@ -476,6 +498,12 @@ public class Home extends javax.swing.JFrame {
         Student.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(45, 118, 232)));
 
         AvatarLabel.setBorder(javax.swing.BorderFactory.createLineBorder(Header.getBackground()));
+        AvatarLabel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        AvatarLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                AvatarLabelMousePressed(evt);
+            }
+        });
 
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel1.setText("Full name");
@@ -586,9 +614,43 @@ public class Home extends javax.swing.JFrame {
         HistoryLable1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         HistoryLable1.setText("STUDENT");
 
-        jSeparator2.setForeground(new java.awt.Color(45, 118, 232));
+        ResetPassButton.setBackground(new java.awt.Color(45, 118, 232));
+        ResetPassButton.setForeground(new java.awt.Color(255, 255, 255));
+        ResetPassButton.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        ResetPassButton.setText("Reset Password");
+        ResetPassButton.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(45, 118, 232)));
+        ResetPassButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        ResetPassButton.setOpaque(true);
+        ResetPassButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                ResetPassButtonMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                ResetPassButtonMouseExited(evt);
+            }
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                ResetPassButtonMousePressed(evt);
+            }
+        });
 
-        jSeparator3.setForeground(new java.awt.Color(45, 118, 232));
+        EditInfoButton.setBackground(new java.awt.Color(45, 118, 232));
+        EditInfoButton.setForeground(new java.awt.Color(255, 255, 255));
+        EditInfoButton.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        EditInfoButton.setText("Edit Information");
+        EditInfoButton.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(45, 118, 232)));
+        EditInfoButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        EditInfoButton.setOpaque(true);
+        EditInfoButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                EditInfoButtonMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                EditInfoButtonMouseExited(evt);
+            }
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                EditInfoButtonMousePressed(evt);
+            }
+        });
 
         javax.swing.GroupLayout StudentLayout = new javax.swing.GroupLayout(Student);
         Student.setLayout(StudentLayout);
@@ -605,28 +667,28 @@ public class Home extends javax.swing.JFrame {
                         .addComponent(StudentNextButton, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(StudentLayout.createSequentialGroup()
                         .addGap(153, 153, 153)
-                        .addGroup(StudentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jSeparator2)
+                        .addComponent(AvatarLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(45, 45, 45)
+                        .addGroup(StudentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(StudentLayout.createSequentialGroup()
-                                .addComponent(AvatarLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(45, 45, 45)
+                                .addGroup(StudentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel1)
+                                    .addComponent(jLabel4)
+                                    .addComponent(jLabel6))
+                                .addGap(70, 70, 70)
                                 .addGroup(StudentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(StudentLayout.createSequentialGroup()
-                                        .addGroup(StudentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                            .addComponent(jLabel1)
-                                            .addComponent(jLabel4)
-                                            .addComponent(jLabel6))
-                                        .addGap(70, 70, 70)
-                                        .addGroup(StudentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(FullNameLabel)
-                                            .addComponent(UserNameLabel)
-                                            .addComponent(LevelLabel)))
-                                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addGap(0, 154, Short.MAX_VALUE))
-                    .addGroup(StudentLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jSeparator3)))
+                                    .addComponent(FullNameLabel)
+                                    .addComponent(UserNameLabel)
+                                    .addComponent(LevelLabel)))
+                            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 154, Short.MAX_VALUE)))
                 .addContainerGap())
+            .addGroup(StudentLayout.createSequentialGroup()
+                .addGap(290, 290, 290)
+                .addComponent(EditInfoButton, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(ResetPassButton, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         StudentLayout.setVerticalGroup(
             StudentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -653,11 +715,11 @@ public class Home extends javax.swing.JFrame {
                             .addComponent(LevelLabel))
                         .addGap(18, 18, 18)
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(29, 29, 29)
-                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(62, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
+                .addGroup(StudentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(EditInfoButton, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(ResetPassButton, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(43, 43, 43))
         );
 
         Content.add(Student, "StudentCard");
@@ -854,10 +916,11 @@ public class Home extends javax.swing.JFrame {
             TestLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(TestLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(TestLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(TestBackButton, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(TestNextButton, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(HistoryLable2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(TestLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(HistoryLable2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(TestLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(TestBackButton, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(TestNextButton, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addGroup(TestLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(Level2Panel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1001,6 +1064,8 @@ public class Home extends javax.swing.JFrame {
 
         jScrollPane1.setBackground(new java.awt.Color(255, 255, 255));
         jScrollPane1.setBorder(null);
+        jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        jScrollPane1.setAutoscrolls(true);
 
         HistoryTable.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         HistoryTable.setModel(new javax.swing.table.DefaultTableModel(
@@ -1042,7 +1107,11 @@ public class Home extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        HistoryTable.setColumnSelectionAllowed(true);
+        HistoryTable.setAutoscrolls(false);
+        HistoryTable.setCellSelectionEnabled(false);
+        HistoryTable.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        HistoryTable.setFocusable(false);
+        HistoryTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         HistoryTable.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(HistoryTable);
 
@@ -1067,7 +1136,8 @@ public class Home extends javax.swing.JFrame {
                 .addGap(0, 0, Short.MAX_VALUE)
                 .addComponent(HistoryLable)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 389, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 325, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(64, 64, 64))
         );
 
         javax.swing.GroupLayout HistoryLayout = new javax.swing.GroupLayout(History);
@@ -1332,6 +1402,53 @@ public class Home extends javax.swing.JFrame {
     private void StudentBackButtonMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_StudentBackButtonMouseEntered
         this.StudentBackButton.setForeground(Color.red);
     }//GEN-LAST:event_StudentBackButtonMouseEntered
+
+    private void exitMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_exitMouseEntered
+        this.exit.setBackground(Color.red);
+    }//GEN-LAST:event_exitMouseEntered
+
+    private void exitMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_exitMouseExited
+        this.exit.setBackground(new Color(45,118,232));
+    }//GEN-LAST:event_exitMouseExited
+
+    private void ResetPassButtonMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ResetPassButtonMouseEntered
+        this.ResetPassButton.setBackground(Color.WHITE);
+        this.ResetPassButton.setForeground(new Color(45,118,232));
+    }//GEN-LAST:event_ResetPassButtonMouseEntered
+
+    private void ResetPassButtonMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ResetPassButtonMouseExited
+        this.ResetPassButton.setForeground(Color.WHITE);
+        this.ResetPassButton.setBackground(new Color(45,118,232));
+    }//GEN-LAST:event_ResetPassButtonMouseExited
+
+    private void ResetPassButtonMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ResetPassButtonMousePressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ResetPassButtonMousePressed
+
+    private void EditInfoButtonMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_EditInfoButtonMouseEntered
+        this.EditInfoButton.setBackground(Color.WHITE);
+        this.EditInfoButton.setForeground(new Color(45,118,232));
+    }//GEN-LAST:event_EditInfoButtonMouseEntered
+
+    private void EditInfoButtonMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_EditInfoButtonMouseExited
+        this.EditInfoButton.setForeground(Color.WHITE);
+        this.EditInfoButton.setBackground(new Color(45,118,232));
+    }//GEN-LAST:event_EditInfoButtonMouseExited
+
+    private void EditInfoButtonMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_EditInfoButtonMousePressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_EditInfoButtonMousePressed
+
+    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField1ActionPerformed
+
+    private void AvatarLabelMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_AvatarLabelMousePressed
+         String imgUrl = getImageUrl();
+        if(!imgUrl.isEmpty()){
+            setImageForLabel(imgUrl, this.AvatarLabel);
+        }
+    }//GEN-LAST:event_AvatarLabelMousePressed
  
     public void setColor(JPanel panel)
     {
@@ -1430,6 +1547,7 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JLabel AvatarLabel;
     private javax.swing.JPanel AvgScoreChartPanel;
     private javax.swing.JPanel Content;
+    private javax.swing.JLabel EditInfoButton;
     private javax.swing.JLabel FullNameLabel;
     private javax.swing.JLabel FullNameLabel1;
     private javax.swing.JPanel Header;
@@ -1454,6 +1572,7 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JEditorPane Lv1TestInfo;
     private javax.swing.JScrollPane Lv2TestInfo;
     private javax.swing.JScrollPane Lv3TestInfo;
+    private javax.swing.JLabel ResetPassButton;
     private javax.swing.JLabel SettingImgLabel;
     private javax.swing.JPanel SettingPanel;
     private javax.swing.JPanel Statistic;
@@ -1503,8 +1622,6 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JSeparator jSeparator2;
-    private javax.swing.JSeparator jSeparator3;
     private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
 }
