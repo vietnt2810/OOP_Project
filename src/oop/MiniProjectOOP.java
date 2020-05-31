@@ -6,7 +6,6 @@
 package oop;
 
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import static oop.dao.JDBCConnection.getJDBCConnection;
 import static oop.utils.Utils.checkRememberMe;
 import oop.view.Home;
