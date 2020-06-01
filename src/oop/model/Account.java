@@ -10,17 +10,28 @@ package oop.model;
  * @author thao
  */
 public class Account {
+    private int id;
     private String username;
-    private String avatarUlr = "/avatar/default-avatar.jpg";
+    private String avatarUlr;
     private String password;
     private User user;
 
     public Account(){      
     }
-    public Account(String username, String password, User user) {
+    public Account(int id, String username, String password, User user, String avatarUrl) {
+        this.id = id;
         this.username = username;
         this.password = password;
         this.user = user;
+        this.avatarUlr = avatarUrl;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
     
     public String getUsername() {

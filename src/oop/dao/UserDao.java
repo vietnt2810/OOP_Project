@@ -13,6 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import static oop.dao.JDBCConnection.getJDBCConnection;
 import oop.model.Account;
+import oop.model.AvgScore;
 import oop.model.User;
 
 /**
@@ -20,12 +21,15 @@ import oop.model.User;
  * @author thao
  */
 public class UserDao {
-    public User verifyLogin(String username, String password){
+    public Account verifyLogin(String username, String password){
         Connection conn = null;
         ResultSet rs=null;
         PreparedStatement prdStatement;
-        String query;
+        String query, avtUrl;
         User usr = null;
+        Account acc = null;
+        AvgScore avg = null;
+        int accId;
         try{
             conn = getJDBCConnection();
             query = "SELECT *, COUNT(*) AS number FROM account acc "
@@ -39,7 +43,11 @@ public class UserDao {
             rs = prdStatement.executeQuery();
             rs.next();
             if(rs.getInt("number")>0){
-                return usr = new User(rs.getInt("usr.id"), rs.getString("usr.lastName"), rs.getString("usr.lastName"), rs.getInt("usr.usrLevel"));
+                avg = new AvgScore(rs.getFloat("usr.level1Score"),rs.getFloat("usr.level2Score"),rs.getFloat("usr.level3Score"));
+                usr = new User(rs.getInt("usr.id"), rs.getString("usr.lastName"), rs.getString("usr.lastName"), rs.getInt("usr.usrLevel"), avg);
+                avtUrl = rs.getString("acc.avatarUrl");
+                accId = rs.getInt("acc.id");
+                return  acc = new Account(accId, username,password, usr, avtUrl);
             }
         }catch(SQLException e){
             System.out.println("Login failed " + e.getMessage());
@@ -57,9 +65,11 @@ public class UserDao {
     public Account checkExistedUser(String username){
         Connection conn = null;
         PreparedStatement prdStatement;
-        String query;
+        String query, avtUrl;
         User usr = null;
         Account acc = null;
+        AvgScore avg = null;
+        int accId;
         try{
             conn = getJDBCConnection();
             query = "SELECT *, COUNT(*) AS number FROM account acc "
@@ -72,10 +82,14 @@ public class UserDao {
             ResultSet rs = prdStatement.executeQuery();
             rs.next();
             if(rs.getInt("number")>0){
-                usr = new User(rs.getInt("usr.id"), rs.getString("usr.lastName"), rs.getString("usr.lastName"), rs.getInt("usr.usrLevel"));
+                avg = new AvgScore(rs.getFloat("usr.level1Score"),rs.getFloat("usr.level2Score"),rs.getFloat("usr.level3Score"));
+                usr = new User(rs.getInt("usr.id"), rs.getString("usr.lastName"), rs.getString("usr.lastName"), rs.getInt("usr.usrLevel"), avg);
                 String password = rs.getString("acc.password");
+                accId = rs.getInt("acc.id");
                 if(usr == null)  return null;
-                return acc = new Account(username,password, usr);
+                avtUrl = rs.getString("acc.avatarUrl");
+                
+                return acc = new Account(accId, username,password, usr, avtUrl);
             }   
         }catch(SQLException e){
             System.out.println("Login failed " + e.getMessage());
@@ -93,25 +107,86 @@ public class UserDao {
         Connection conn = null;
         PreparedStatement prdStatement;
         String query;
-        
+        int query1 = 0;
+        int query2 = 1;
         try{
             conn = getJDBCConnection();
             if(this.checkExistedUser(username) != null)    return false;
             
-            query = "INSERT INTO account(username, password) VALUES(?,?)";
-            
+            query = "INSERT INTO account(username, password) VALUES(?,?)";     
             prdStatement = conn.prepareStatement(query);
             prdStatement.setString(1,username);
             prdStatement.setString(2,password);
-            int res = prdStatement.executeUpdate();
-            
-            if(res > 0) return true;
+            query1 = prdStatement.executeUpdate();
+            System.out.println(getExistedAccountId(username));
+            query = "INSERT INTO user(accId) VALUES(?)";      
+            prdStatement = conn.prepareStatement(query);
+            prdStatement.setInt(1, getExistedAccountId(username));
+            query2 = prdStatement.executeUpdate();
+            if(query1 > 0 && query2 > 0) return true;          
         }catch(SQLException e){
-            System.out.println("Login failed " + e.getMessage());
+            System.out.println("Add user failed " + e.getMessage());
             System.out.println(e.getStackTrace());
             return false;
         }finally{
              try {
+                conn.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(UserDao.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return false;
+    }
+    
+    private int getExistedAccountId(String username){
+        Account acc = null;
+        Connection conn = null;
+        PreparedStatement prdStatement;
+        String query;
+        try{
+            conn = getJDBCConnection();
+            query = "SELECT * FROM account "
+                    + "WHERE username=?";
+            
+            prdStatement = conn.prepareStatement(query);
+            prdStatement.setString(1,username);
+            ResultSet rs = prdStatement.executeQuery();
+            
+            if(rs.next()){
+                return rs.getInt("id");
+            }   
+        }catch(SQLException e){
+            System.out.println(e.getStackTrace());
+        }finally{
+            try {
+                conn.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(UserDao.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return -1;
+    }
+    
+    public boolean saveAvatarUrl(String url, int accId){
+        Connection conn = null;
+        PreparedStatement prdStatement;
+        String query;
+        int result;
+        try{
+            conn = getJDBCConnection();
+            query = "UPDATE account SET avatarUrl = ? "
+                    + "WHERE id = ?";
+            prdStatement = conn.prepareStatement(query);
+            prdStatement.setInt(1, accId);
+            result = prdStatement.executeUpdate();
+            
+            if(result > 0){
+                return true;
+            }   
+        }catch(SQLException e){
+            System.out.println(e.getStackTrace());
+        }finally{
+            try {
                 conn.close();
             } catch (SQLException ex) {
                 Logger.getLogger(UserDao.class.getName()).log(Level.SEVERE, null, ex);

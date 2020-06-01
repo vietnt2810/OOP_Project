@@ -14,6 +14,15 @@ public class User {
     private String firstName;
     private String lastName;
     private int level = 1;
+    private AvgScore score;
+
+    public AvgScore getScore() {
+        return score;
+    }
+
+    public void setScore(AvgScore score) {
+        this.score = score;
+    }
     
     public User(){
     }
@@ -27,6 +36,14 @@ public class User {
     }
     public User(int id, String firstName, String lastName, int level){
         this(id, firstName, lastName);
+        this.level = level;
+    }
+
+    public User(int id, String firstName, String lastName,int level, AvgScore score) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.score = score;
         this.level = level;
     }
     

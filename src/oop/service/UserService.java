@@ -25,13 +25,10 @@ public class UserService {
     }
     
     public Account validateLogin(String username, String password){
-        User usr;
         Account acc;  
         
-        usr = userDao.verifyLogin(username, password);
-        if(usr == null)  return null;
-        acc = new Account(username,password, usr);
-        
+        acc = userDao.verifyLogin(username, password);
+        if(acc == null)  return null;
         return acc;
     }
     
@@ -43,4 +40,8 @@ public class UserService {
         return userDao.checkExistedUser(username);
     }
     
+    public boolean saveAvatarUrl(String url, int accId){
+        System.out.println("url " + url + " " + accId);
+        return false;
+    }
 }

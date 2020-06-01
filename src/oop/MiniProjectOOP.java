@@ -24,10 +24,10 @@ public class MiniProjectOOP extends JFrame{
      */
     public static void main(String[] args) {
         String username = checkRememberMe();
-        Account acc = null;
-        if(username != null && getJDBCConnection() != null){
-            UserService userService = new UserService();
-            acc = userService.checkExistedUser(username);
+        UserService userService = new UserService();
+        Account acc = userService.checkExistedUser(username);
+        if(username != null && getJDBCConnection() != null && acc != null){
+            
             Home homeScreen = new Home(acc);
             homeScreen.setVisible(true);
         }else{

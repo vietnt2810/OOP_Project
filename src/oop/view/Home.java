@@ -14,23 +14,22 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import oop.model.Account;
+import oop.service.UserService;
 import static oop.utils.Utils.getImageUrl;
 import static oop.utils.Utils.rememberMe;
 import static oop.utils.Utils.setImageForLabel;
+import static oop.utils.Utils.setTextForLabel;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.category.DefaultCategoryDataset;
 
-/**
- *
- * @author proxc
- */
+
+
 public class Home extends javax.swing.JFrame {
 
-    /**
-     * Creates new form Home
-     */
+    private static Account Acc;
+    
     public Home(){
         JOptionPane.showMessageDialog(this.rootPane, "Authenticating fails","ERROR", JOptionPane.ERROR_MESSAGE);
         System.exit(-1);
@@ -41,8 +40,11 @@ public class Home extends javax.swing.JFrame {
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
         this.setResizable(false);
-        this.SetScoreChart();
-        this.SetTimeChart();
+        
+        Acc = new Account()
+        this.setContentForStudent(acc);
+        this.SetScoreChart(acc);
+        this.SetTimeChart(acc);
     }
 
     /**
@@ -94,11 +96,11 @@ public class Home extends javax.swing.JFrame {
         LevelLabel = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
-        UserNameLabel1 = new javax.swing.JLabel();
+        Lv2ScoreLabel = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
-        LevelLabel1 = new javax.swing.JLabel();
+        Lv3ScoreLabel = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        FullNameLabel1 = new javax.swing.JLabel();
+        Lv1ScoreLabel = new javax.swing.JLabel();
         StudentBackButton = new javax.swing.JLabel();
         StudentNextButton = new javax.swing.JLabel();
         HistoryLable1 = new javax.swing.JLabel();
@@ -526,17 +528,17 @@ public class Home extends javax.swing.JFrame {
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel5.setText("Level 2");
 
-        UserNameLabel1.setText("78");
+        Lv2ScoreLabel.setText("78");
 
         jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel8.setText("Level 3");
 
-        LevelLabel1.setText("20");
+        Lv3ScoreLabel.setText("20");
 
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel3.setText("Level 1");
 
-        FullNameLabel1.setText("90");
+        Lv1ScoreLabel.setText("90");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -550,9 +552,9 @@ public class Home extends javax.swing.JFrame {
                     .addComponent(jLabel8))
                 .addGap(70, 70, 70)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(FullNameLabel1)
-                    .addComponent(UserNameLabel1)
-                    .addComponent(LevelLabel1))
+                    .addComponent(Lv1ScoreLabel)
+                    .addComponent(Lv2ScoreLabel)
+                    .addComponent(Lv3ScoreLabel))
                 .addContainerGap(191, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -561,15 +563,15 @@ public class Home extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(FullNameLabel1))
+                    .addComponent(Lv1ScoreLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(UserNameLabel1))
+                    .addComponent(Lv2ScoreLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
-                    .addComponent(LevelLabel1))
+                    .addComponent(Lv3ScoreLabel))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -1108,7 +1110,6 @@ public class Home extends javax.swing.JFrame {
             }
         });
         HistoryTable.setAutoscrolls(false);
-        HistoryTable.setCellSelectionEnabled(false);
         HistoryTable.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         HistoryTable.setFocusable(false);
         HistoryTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
@@ -1444,8 +1445,10 @@ public class Home extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void AvatarLabelMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_AvatarLabelMousePressed
-         String imgUrl = getImageUrl();
+        String imgUrl = getImageUrl();
+        UserService userService = new UserService();
         if(!imgUrl.isEmpty()){
+            userService.saveAvatarUrl(imgUrl, Acc.getId());
             setImageForLabel(imgUrl, this.AvatarLabel);
         }
     }//GEN-LAST:event_AvatarLabelMousePressed
@@ -1454,7 +1457,7 @@ public class Home extends javax.swing.JFrame {
     {
         panel.setBackground(new java.awt.Color(197, 197, 197));
     }
-    private void SetScoreChart(){
+    private void SetScoreChart(Account acc){
            DefaultCategoryDataset chartData = new DefaultCategoryDataset();
            chartData.addValue(70.6, "Level 1", "12/1");
            chartData.addValue(73.6, "Level 1", "13/1");
@@ -1485,7 +1488,7 @@ public class Home extends javax.swing.JFrame {
        }
 
 
-       private void SetTimeChart(){
+    private void SetTimeChart(Account acc){
            DefaultCategoryDataset chartData = new DefaultCategoryDataset();
            chartData.addValue(1.3, "Stydy time", "12/1");
            chartData.addValue(0.3, "Stydy time", "13/1");
@@ -1503,9 +1506,20 @@ public class Home extends javax.swing.JFrame {
            this.TimeChartPanel.add(chartPanel, BorderLayout.CENTER);
            this.TimeChartPanel.validate();
        }
+    
     public void resetColor(JPanel panel)
     {
         panel.setBackground(new java.awt.Color(240,240,240));
+    }
+    
+    public void setContentForStudent(Account acc){
+        setImageForLabel(acc.getAvatarUlr(), this.AvatarLabel);
+        setTextForLabel(this.FullNameLabel, acc.getUsername());
+        setTextForLabel(this.UserNameLabel, acc.getUsername());
+        setTextForLabel(this.LevelLabel, String.valueOf(acc.getUser().getLevel()));
+        setTextForLabel(this.Lv1ScoreLabel, String.valueOf(acc.getUser().getScore().getLevel1()));
+        setTextForLabel(this.Lv2ScoreLabel, String.valueOf(acc.getUser().getScore().getLevel2()));
+        setTextForLabel(this.Lv3ScoreLabel, String.valueOf(acc.getUser().getScore().getLevel3()));
     }
     /**
      * @param args the command line arguments
@@ -1549,7 +1563,6 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JPanel Content;
     private javax.swing.JLabel EditInfoButton;
     private javax.swing.JLabel FullNameLabel;
-    private javax.swing.JLabel FullNameLabel1;
     private javax.swing.JPanel Header;
     private javax.swing.JPanel History;
     private javax.swing.JLabel HistoryBackButton;
@@ -1566,11 +1579,13 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JPanel Level2Panel;
     private javax.swing.JPanel Level3Panel;
     private javax.swing.JLabel LevelLabel;
-    private javax.swing.JLabel LevelLabel1;
     private javax.swing.JPanel LogOutPanel;
     private javax.swing.JLabel LogoutImgLabel;
+    private javax.swing.JLabel Lv1ScoreLabel;
     private javax.swing.JEditorPane Lv1TestInfo;
+    private javax.swing.JLabel Lv2ScoreLabel;
     private javax.swing.JScrollPane Lv2TestInfo;
+    private javax.swing.JLabel Lv3ScoreLabel;
     private javax.swing.JScrollPane Lv3TestInfo;
     private javax.swing.JLabel ResetPassButton;
     private javax.swing.JLabel SettingImgLabel;
@@ -1599,7 +1614,6 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JPanel TestPanel;
     private javax.swing.JPanel TimeChartPanel;
     private javax.swing.JLabel UserNameLabel;
-    private javax.swing.JLabel UserNameLabel1;
     private javax.swing.JLabel exit;
     private javax.swing.JEditorPane jEditorPane2;
     private javax.swing.JEditorPane jEditorPane3;

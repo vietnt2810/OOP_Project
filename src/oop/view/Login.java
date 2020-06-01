@@ -530,7 +530,7 @@ public class Login extends javax.swing.JFrame {
                 if(this.LoginRememberCheckBox.isSelected()){
                     rememberMe(username);
                 }
-                JOptionPane.showMessageDialog(this.rootPane, "User has been registered","INFORMATION", JOptionPane.OK_OPTION);
+                JOptionPane.showMessageDialog(this.rootPane, "User has been registered","INFORMATION", JOptionPane.INFORMATION_MESSAGE);
                 this.setVisible(false);
                 
                 Home homeScreen = new Home(userService.checkExistedUser(username));
