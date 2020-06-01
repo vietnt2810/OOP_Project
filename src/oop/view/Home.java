@@ -41,7 +41,7 @@ public class Home extends javax.swing.JFrame {
         this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
         this.setResizable(false);
         
-        Acc = new Account()
+        Acc = new Account(acc.getId(), acc.getUsername(), acc.getPassword(),acc.getUser(), acc.getAvatarUlr());
         this.setContentForStudent(acc);
         this.SetScoreChart(acc);
         this.SetTimeChart(acc);
