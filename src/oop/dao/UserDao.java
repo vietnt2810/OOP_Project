@@ -32,7 +32,7 @@ public class UserDao {
         int accId;
         try{
             conn = getJDBCConnection();
-            query = "SELECT *, COUNT(*) AS number FROM account acc "
+            query = "SELECT * FROM account acc "
                     + "INNER JOIN user usr "
                     + "ON acc.id = usr.accId "
                     + "WHERE acc.username=? AND acc.password=?";
@@ -41,8 +41,8 @@ public class UserDao {
             prdStatement.setString(1,username);
             prdStatement.setString(2,password);
             rs = prdStatement.executeQuery();
-            rs.next();
-            if(rs.getInt("number")>0){
+            
+            if(rs.next()){
                 avg = new AvgScore(rs.getFloat("usr.level1Score"),rs.getFloat("usr.level2Score"),rs.getFloat("usr.level3Score"));
                 usr = new User(rs.getInt("usr.id"), rs.getString("usr.lastName"), rs.getString("usr.lastName"), rs.getInt("usr.usrLevel"), avg);
                 avtUrl = rs.getString("acc.avatarUrl");
@@ -177,14 +177,16 @@ public class UserDao {
             query = "UPDATE account SET avatarUrl = ? "
                     + "WHERE id = ?";
             prdStatement = conn.prepareStatement(query);
-            prdStatement.setInt(1, accId);
+            prdStatement.setString(1, url);
+            prdStatement.setInt(2, accId);
             result = prdStatement.executeUpdate();
             
             if(result > 0){
                 return true;
             }   
         }catch(SQLException e){
-            System.out.println(e.getStackTrace());
+            System.out.print("save image fail ");
+            System.out.println(e.getMessage());
         }finally{
             try {
                 conn.close();

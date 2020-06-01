@@ -5,6 +5,10 @@
  */
 package oop.service;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
@@ -41,7 +45,17 @@ public class UserService {
     }
     
     public boolean saveAvatarUrl(String url, int accId){
-        System.out.println("url " + url + " " + accId);
+        try {
+            if(url.isEmpty())
+                return false;
+            String newUrl = url.replace("\\", "/");
+            String[] arr = newUrl.split("/");
+            String imageUrl = "./avatar/" + arr[arr.length-1];
+            Files.copy(Paths.get(newUrl), Paths.get("./avatar/"+arr[arr.length-1]), StandardCopyOption.REPLACE_EXISTING);
+            return userDao.saveAvatarUrl(imageUrl, accId);
+        } catch (IOException ex) {
+            Logger.getLogger(UserService.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return false;
     }
 }
