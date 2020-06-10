@@ -10,10 +10,14 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.util.ArrayList;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import oop.model.Account;
+import oop.model.TestLesson;
+import oop.model.TestSection;
+import oop.service.TestService;
 import oop.service.UserService;
 import static oop.utils.Utils.getImageUrl;
 import static oop.utils.Utils.rememberMe;
@@ -29,6 +33,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
 public class Home extends javax.swing.JFrame {
 
     private static Account Acc;
+    private static TestLesson testLesson;
     
     public Home(){
         JOptionPane.showMessageDialog(this.rootPane, "Authenticating fails","ERROR", JOptionPane.ERROR_MESSAGE);
@@ -45,6 +50,7 @@ public class Home extends javax.swing.JFrame {
         this.setContentForStudent(acc);
         this.SetScoreChart(acc);
         this.SetTimeChart(acc);
+        
     }
 
     /**
@@ -135,6 +141,21 @@ public class Home extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         HistoryTable = new javax.swing.JTable();
         HistoryLable = new javax.swing.JLabel();
+        TestList = new javax.swing.JPanel();
+        TestListBackButton = new javax.swing.JLabel();
+        HistoryLable4 = new javax.swing.JLabel();
+        TestListNextButton = new javax.swing.JLabel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        TestListList = new javax.swing.JList();
+        TestListDetail = new javax.swing.JPanel();
+        StartTestButton = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        TestNameLabel = new javax.swing.JLabel();
+        TestLengthLabel = new javax.swing.JLabel();
+        jLabel18 = new javax.swing.JLabel();
+        jLabel19 = new javax.swing.JLabel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        SummaryTestText = new javax.swing.JTextPane();
 
         jLabel7.setText("jLabel7");
 
@@ -144,7 +165,6 @@ public class Home extends javax.swing.JFrame {
         setBackground(new java.awt.Color(255, 0, 204));
         setLocationByPlatform(true);
         setUndecorated(true);
-        setPreferredSize(new java.awt.Dimension(860, 650));
 
         jPanel1.setBackground(new java.awt.Color(45, 118, 232));
         jPanel1.setMinimumSize(new java.awt.Dimension(860, 600));
@@ -152,6 +172,7 @@ public class Home extends javax.swing.JFrame {
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         Header.setBackground(new java.awt.Color(45, 118, 232));
+        Header.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(45, 118, 232)));
         Header.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseDragged(java.awt.event.MouseEvent evt) {
                 HeaderMouseDragged(evt);
@@ -212,7 +233,7 @@ public class Home extends javax.swing.JFrame {
         jLabel16.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/search_20px_1.png"))); // NOI18N
         Header.add(jLabel16, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 160, -1, -1));
 
-        jPanel1.add(Header, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 860, 240));
+        jPanel1.add(Header, new org.netbeans.lib.awtextra.AbsoluteConstraints(-10, 0, 860, 240));
 
         Content.setLayout(new java.awt.CardLayout());
 
@@ -782,6 +803,11 @@ public class Home extends javax.swing.JFrame {
         TestLv1Button.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         TestLv1Button.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         TestLv1Button.setOpaque(true);
+        TestLv1Button.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                TestLv1ButtonMousePressed(evt);
+            }
+        });
 
         javax.swing.GroupLayout Level1PanelLayout = new javax.swing.GroupLayout(Level1Panel);
         Level1Panel.setLayout(Level1PanelLayout);
@@ -816,6 +842,11 @@ public class Home extends javax.swing.JFrame {
         TestLv2Button.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         TestLv2Button.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         TestLv2Button.setOpaque(true);
+        TestLv2Button.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                TestLv2ButtonMousePressed(evt);
+            }
+        });
 
         jEditorPane2.setEditable(false);
         jEditorPane2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
@@ -857,6 +888,11 @@ public class Home extends javax.swing.JFrame {
         TestLv3Button.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         TestLv3Button.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         TestLv3Button.setOpaque(true);
+        TestLv3Button.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                TestLv3ButtonMousePressed(evt);
+            }
+        });
 
         jEditorPane3.setEditable(false);
         jEditorPane3.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
@@ -908,9 +944,9 @@ public class Home extends javax.swing.JFrame {
                         .addComponent(Level3Panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(TestLayout.createSequentialGroup()
                         .addComponent(TestBackButton, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(303, 303, 303)
-                        .addComponent(HistoryLable2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(HistoryLable2)
+                        .addGap(313, 313, 313)
                         .addComponent(TestNextButton, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
@@ -918,12 +954,11 @@ public class Home extends javax.swing.JFrame {
             TestLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(TestLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(TestLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(HistoryLable2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(TestLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(TestBackButton, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(TestNextButton, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(18, 18, 18)
+                .addGroup(TestLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(TestBackButton, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(TestNextButton, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(HistoryLable2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(18, 18, Short.MAX_VALUE)
                 .addGroup(TestLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(Level2Panel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(Level1Panel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1174,6 +1209,193 @@ public class Home extends javax.swing.JFrame {
 
         Content.add(History, "HistoryCard");
 
+        TestList.setBackground(new java.awt.Color(255, 255, 255));
+        TestList.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(45, 118, 232)));
+
+        TestListBackButton.setBackground(new java.awt.Color(255, 255, 255));
+        TestListBackButton.setForeground(new java.awt.Color(45, 118, 232));
+        TestListBackButton.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        TestListBackButton.setText("<<Back");
+        TestListBackButton.setAlignmentY(0.0F);
+        TestListBackButton.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(45, 118, 232)));
+        TestListBackButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        TestListBackButton.setOpaque(true);
+        TestListBackButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                TestListBackButtonMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                TestListBackButtonMouseExited(evt);
+            }
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                TestListBackButtonMousePressed(evt);
+            }
+        });
+
+        HistoryLable4.setBackground(new java.awt.Color(255, 255, 255));
+        HistoryLable4.setFont(new java.awt.Font("Tahoma", 1, 16)); // NOI18N
+        HistoryLable4.setForeground(new java.awt.Color(51, 51, 255));
+        HistoryLable4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        HistoryLable4.setText("Level 1");
+
+        TestListNextButton.setBackground(new java.awt.Color(255, 255, 255));
+        TestListNextButton.setForeground(new java.awt.Color(45, 118, 232));
+        TestListNextButton.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        TestListNextButton.setText("Next>>");
+        TestListNextButton.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(45, 118, 232)));
+        TestListNextButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        TestListNextButton.setOpaque(true);
+        TestListNextButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                TestListNextButtonMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                TestListNextButtonMouseExited(evt);
+            }
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                TestListNextButtonMousePressed(evt);
+            }
+        });
+
+        jScrollPane3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(45, 118, 232)));
+
+        TestListList.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5", "Item 1", "Item 2", "Item 3", "Item 4", "Item 5", "Item 1", "Item 2", "Item 3", "Item 4", "Item 5", "Item 1", "Item 2", "Item 3", "Item 4", "Item 5", "Item 1", "Item 2", "Item 3", "Item 4", "Item 5", "Item 1", "Item 2", "Item 3", "Item 4", "Item 5", "Item 1", "Item 2", "Item 3", "Item 4", "Item 5", "Item 1", "Item 2", "Item 3", "Item 4", "Item 5", "Item 1", "Item 2", "Item 3", "Item 4", "Item 5", "Item 1", "Item 2", "Item 3", "Item 4", "Item 5", "Item 1", "Item 2", "Item 3", "Item 4", "Item 5", "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public Object getElementAt(int i) { return strings[i]; }
+        });
+        TestListList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        TestListList.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                TestListListMouseClicked(evt);
+            }
+        });
+        TestListList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
+                TestListListValueChanged(evt);
+            }
+        });
+        jScrollPane3.setViewportView(TestListList);
+
+        TestListDetail.setBackground(new java.awt.Color(255, 255, 255));
+        TestListDetail.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(45, 118, 232)), "Detail", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 13), new java.awt.Color(45, 118, 232))); // NOI18N
+
+        StartTestButton.setBackground(new java.awt.Color(51, 102, 255));
+        StartTestButton.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
+        StartTestButton.setForeground(new java.awt.Color(255, 255, 255));
+        StartTestButton.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        StartTestButton.setText("Start");
+        StartTestButton.setAlignmentY(0.0F);
+        StartTestButton.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(45, 118, 232)));
+        StartTestButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        StartTestButton.setEnabled(false);
+        StartTestButton.setOpaque(true);
+        StartTestButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                StartTestButtonMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                StartTestButtonMouseExited(evt);
+            }
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                StartTestButtonMousePressed(evt);
+            }
+        });
+
+        jLabel10.setText("Test name");
+
+        TestNameLabel.setText("jLabel12");
+
+        TestLengthLabel.setText("jLabel12");
+
+        jLabel18.setText("Length");
+
+        jLabel19.setText("Summary");
+
+        SummaryTestText.setText("asdlkjf;alksjdfl;jals;dfjlajfsd");
+        jScrollPane4.setViewportView(SummaryTestText);
+
+        javax.swing.GroupLayout TestListDetailLayout = new javax.swing.GroupLayout(TestListDetail);
+        TestListDetail.setLayout(TestListDetailLayout);
+        TestListDetailLayout.setHorizontalGroup(
+            TestListDetailLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(TestListDetailLayout.createSequentialGroup()
+                .addGroup(TestListDetailLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(TestListDetailLayout.createSequentialGroup()
+                        .addGap(33, 33, 33)
+                        .addGroup(TestListDetailLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(TestListDetailLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(jLabel19, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jLabel10))
+                        .addGap(41, 41, 41)
+                        .addGroup(TestListDetailLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(TestNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(TestLengthLabel)
+                            .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(TestListDetailLayout.createSequentialGroup()
+                        .addGap(173, 173, 173)
+                        .addComponent(StartTestButton, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        TestListDetailLayout.setVerticalGroup(
+            TestListDetailLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(TestListDetailLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(TestListDetailLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel10)
+                    .addComponent(TestNameLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(TestListDetailLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel18)
+                    .addComponent(TestLengthLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(TestListDetailLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel19)
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(StartTestButton, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout TestListLayout = new javax.swing.GroupLayout(TestList);
+        TestList.setLayout(TestListLayout);
+        TestListLayout.setHorizontalGroup(
+            TestListLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(TestListLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(TestListLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(TestListLayout.createSequentialGroup()
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 233, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(TestListDetail, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(TestListLayout.createSequentialGroup()
+                        .addComponent(TestListBackButton, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(51, 51, 51)
+                        .addComponent(HistoryLable4, javax.swing.GroupLayout.PREFERRED_SIZE, 494, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 125, Short.MAX_VALUE)
+                        .addComponent(TestListNextButton, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
+        );
+        TestListLayout.setVerticalGroup(
+            TestListLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(TestListLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(TestListLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(TestListNextButton, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(HistoryLable4)
+                    .addComponent(TestListBackButton, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(TestListLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(TestListLayout.createSequentialGroup()
+                        .addGap(0, 9, Short.MAX_VALUE)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(TestListDetail, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+
+        Content.add(TestList, "TestListCard");
+
         jPanel1.add(Content, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 240, 860, 380));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -1184,7 +1406,7 @@ public class Home extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 620, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 650, Short.MAX_VALUE)
         );
 
         pack();
@@ -1452,7 +1674,85 @@ public class Home extends javax.swing.JFrame {
             setImageForLabel(imgUrl, this.AvatarLabel);
         }
     }//GEN-LAST:event_AvatarLabelMousePressed
+
+    private void TestListBackButtonMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TestListBackButtonMouseEntered
+        this.TestListBackButton.setForeground(Color.WHITE);
+        this.TestListBackButton.setBackground(new Color(45,118,232));
+    }//GEN-LAST:event_TestListBackButtonMouseEntered
+
+    private void TestListBackButtonMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TestListBackButtonMouseExited
+        this.TestListBackButton.setBackground(Color.WHITE);
+        this.TestListBackButton.setForeground(new Color(45,118,232));
+    }//GEN-LAST:event_TestListBackButtonMouseExited
+
+    private void TestListBackButtonMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TestListBackButtonMousePressed
+       CardLayout cardLayout = (CardLayout)this.Content.getLayout();
+       cardLayout.show(this.Content, "TestCard");
+    }//GEN-LAST:event_TestListBackButtonMousePressed
+
+    private void TestListNextButtonMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TestListNextButtonMouseEntered
+        this.TestListNextButton.setForeground(Color.WHITE);
+        this.TestListNextButton.setBackground(new Color(45,118,232));
+    }//GEN-LAST:event_TestListNextButtonMouseEntered
+
+    private void TestListNextButtonMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TestListNextButtonMouseExited
+       
+        this.TestListNextButton.setBackground(Color.WHITE);
+        this.TestListNextButton.setForeground(new Color(45,118,232));
+    }//GEN-LAST:event_TestListNextButtonMouseExited
+
+    private void TestListNextButtonMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TestListNextButtonMousePressed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TestListNextButtonMousePressed
+
+    private void TestLv1ButtonMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TestLv1ButtonMousePressed
+       this.setContentForTestList(1);
+       CardLayout cardLayout = (CardLayout)this.Content.getLayout();
+       cardLayout.show(this.Content, "TestListCard"); 
+    }//GEN-LAST:event_TestLv1ButtonMousePressed
+
+    private void TestLv2ButtonMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TestLv2ButtonMousePressed
+       this.setContentForTestList(2);
+       CardLayout cardLayout = (CardLayout)this.Content.getLayout();
+       cardLayout.show(this.Content, "TestListCard"); 
+    }//GEN-LAST:event_TestLv2ButtonMousePressed
+
+    private void TestLv3ButtonMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TestLv3ButtonMousePressed
+       this.setContentForTestList(3);
+       CardLayout cardLayout = (CardLayout)this.Content.getLayout();
+       cardLayout.show(this.Content, "TestListCard"); 
+    }//GEN-LAST:event_TestLv3ButtonMousePressed
+
+    private void StartTestButtonMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_StartTestButtonMouseEntered
+        // TODO add your handling code here:
+    }//GEN-LAST:event_StartTestButtonMouseEntered
+
+    private void StartTestButtonMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_StartTestButtonMouseExited
+        // TODO add your handling code here:
+    }//GEN-LAST:event_StartTestButtonMouseExited
+
+    private void StartTestButtonMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_StartTestButtonMousePressed
+        Test test = new Test(testLesson, Acc);
+        test.setVisible(true);
+    }//GEN-LAST:event_StartTestButtonMousePressed
+
+    private void TestListListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_TestListListValueChanged
+        this.StartTestButton.setEnabled(true);
+        this.getTestDetail();  
+    }//GEN-LAST:event_TestListListValueChanged
+
+    private void TestListListMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TestListListMouseClicked
+//        this.StartTestButton.setEnabled(true);
+    }//GEN-LAST:event_TestListListMouseClicked
  
+    public void getTestDetail(){
+        TestService testService = new TestService();
+        String testName = this.TestListList.getSelectedValue().toString();
+        this.testLesson = testService.getTestDetail(testName);
+        setTextForLabel(this.TestNameLabel, testName);
+        setTextForLabel(this.TestLengthLabel, String.valueOf(testLesson.getLength()));
+        this.SummaryTestText.setText(testLesson.getDemoScript());
+    }
     public void setColor(JPanel panel)
     {
         panel.setBackground(new java.awt.Color(197, 197, 197));
@@ -1521,6 +1821,11 @@ public class Home extends javax.swing.JFrame {
         setTextForLabel(this.Lv2ScoreLabel, String.valueOf(acc.getUser().getScore().getLevel2()));
         setTextForLabel(this.Lv3ScoreLabel, String.valueOf(acc.getUser().getScore().getLevel3()));
     }
+    
+    public void setContentForTestList(int level){
+        TestService testService = new TestService();
+        this.TestListList.setModel(testService.getTestList(level));
+    }
     /**
      * @param args the command line arguments
      */
@@ -1571,6 +1876,7 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JLabel HistoryLable1;
     private javax.swing.JLabel HistoryLable2;
     private javax.swing.JLabel HistoryLable3;
+    private javax.swing.JLabel HistoryLable4;
     private javax.swing.JLabel HistoryNextButton;
     private javax.swing.JPanel HistoryPanel;
     private javax.swing.JTable HistoryTable;
@@ -1590,6 +1896,7 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JLabel ResetPassButton;
     private javax.swing.JLabel SettingImgLabel;
     private javax.swing.JPanel SettingPanel;
+    private javax.swing.JLabel StartTestButton;
     private javax.swing.JPanel Statistic;
     private javax.swing.JLabel StatisticBackButton;
     private javax.swing.JLabel StatisticImgLabel;
@@ -1602,14 +1909,22 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JLabel StudentLabel;
     private javax.swing.JLabel StudentNextButton;
     private javax.swing.JPanel StudentPanel;
+    private javax.swing.JTextPane SummaryTestText;
     private javax.swing.JPanel TablePanel;
     private javax.swing.JPanel Test;
     private javax.swing.JLabel TestBackButton;
     private javax.swing.JLabel TestImgLabel;
     private javax.swing.JLabel TestLabel;
+    private javax.swing.JLabel TestLengthLabel;
+    private javax.swing.JPanel TestList;
+    private javax.swing.JLabel TestListBackButton;
+    private javax.swing.JPanel TestListDetail;
+    private javax.swing.JList TestListList;
+    private javax.swing.JLabel TestListNextButton;
     private javax.swing.JLabel TestLv1Button;
     private javax.swing.JLabel TestLv2Button;
     private javax.swing.JLabel TestLv3Button;
+    private javax.swing.JLabel TestNameLabel;
     private javax.swing.JLabel TestNextButton;
     private javax.swing.JPanel TestPanel;
     private javax.swing.JPanel TimeChartPanel;
@@ -1618,11 +1933,14 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JEditorPane jEditorPane2;
     private javax.swing.JEditorPane jEditorPane3;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel18;
+    private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -1635,6 +1953,8 @@ public class Home extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables

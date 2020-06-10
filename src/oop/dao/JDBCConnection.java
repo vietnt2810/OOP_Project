@@ -18,6 +18,7 @@ public class JDBCConnection {
         final String url = "jdbc:mysql://localhost:3306/oop";
         final String user = "root";
         final String password = "";
+        
         try{
             Class.forName("com.mysql.jdbc.Driver");
             return (Connection) DriverManager.getConnection(url, user, password);
@@ -28,6 +29,7 @@ public class JDBCConnection {
             System.out.println(e.getMessage());
             System.out.println(e.getStackTrace());
         }
+        
         return null;
     }
 }

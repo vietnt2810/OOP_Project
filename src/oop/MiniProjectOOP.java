@@ -5,6 +5,17 @@
  */
 package oop;
 
+import java.io.File;
+import java.io.IOException;
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.DataLine;
+import javax.sound.sampled.LineEvent;
+import javax.sound.sampled.LineListener;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JFrame;
 import static oop.dao.JDBCConnection.getJDBCConnection;
 import oop.model.Account;
@@ -21,8 +32,8 @@ public class MiniProjectOOP extends JFrame{
 
     /**
      * @param args the command line arguments
-     */
-    public static void main(String[] args) {
+//     */
+    public static void main(String[] args)  {
         String username = checkRememberMe();
         UserService userService = new UserService();
         Account acc = userService.checkExistedUser(username);
@@ -34,6 +45,7 @@ public class MiniProjectOOP extends JFrame{
             Login login = new Login();
             login.setVisible(true);
         }
+        
+        
     }
-    
 }

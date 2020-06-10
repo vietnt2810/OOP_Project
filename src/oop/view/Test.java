@@ -7,8 +7,16 @@ package oop.view;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import static oop.utils.Utils.setImageForLabel;
-
+import javax.sound.sampled.Clip;
+import oop.model.Account;
+import oop.model.History;
+import oop.model.TestLesson;
+import oop.service.TestService;
+import static oop.utils.Utils.setTextForLabel;
 /**
  *
  * @author thao
@@ -18,13 +26,32 @@ public class Test extends javax.swing.JFrame {
     /**
      * Creates new form Test
      */
-    public Test() {
+    private static TestLesson testlesson;
+    private static Account acc;
+    private static int currentLine;
+    private static int currentWordInLine;
+    private static boolean changeLine;
+    private static Thread t;
+    private static Thread t2;
+    private static String successString;
+    private static Date time;
+    
+    public Test(TestLesson testLesson, Account acc) {
+        Test.testlesson = testLesson;
+        Test.acc = acc;
         initComponents();
         //set window ra giua screen
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
         this.setResizable(false);
-        setImageForLabel("D:\\IT\\java\\MiniProjectOOP\\img\\timer2.png", this.TimerIconLabel);
+        setTextForLabel(this.TestNameLabel, testlesson.getName());
+        setTextForLabel(this.TimerIconLabel, "00:00");
+        setTextForLabel(this.TimerLabel, "/ "+testlesson.getLength()/60 + ":" + testlesson.getLength()%60);
+        Test.currentLine = 0;
+        Test.currentWordInLine = 0;
+        Test.changeLine = false;
+        Test.successString = "";
+        
     }
 
     /**
@@ -37,50 +64,85 @@ public class Test extends javax.swing.JFrame {
     private void initComponents() {
 
         ResultPanel = new javax.swing.JPanel();
-        textField1 = new java.awt.TextField();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        ResultTextArea = new javax.swing.JTextArea();
+        jPanel1 = new javax.swing.JPanel();
         ExtensionButtonPanel = new javax.swing.JPanel();
-        StopButton = new javax.swing.JButton();
         RestartButton = new javax.swing.JButton();
         HintButton = new javax.swing.JButton();
+        StartButton = new javax.swing.JButton();
         TimerLabel = new javax.swing.JLabel();
         TimerIconLabel = new javax.swing.JLabel();
         jProgressBar1 = new javax.swing.JProgressBar();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
-        jLabel1 = new javax.swing.JLabel();
+        UserInputTextArea = new javax.swing.JTextArea();
+        TestNameLabel = new javax.swing.JLabel();
         jProgressBar2 = new javax.swing.JProgressBar();
 
+        setAlwaysOnTop(true);
+        setBackground(new java.awt.Color(255, 255, 255));
+        setModalExclusionType(java.awt.Dialog.ModalExclusionType.APPLICATION_EXCLUDE);
+        setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
+
+        ResultPanel.setBackground(new java.awt.Color(255, 255, 255));
         ResultPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Result"));
 
-        textField1.setEditable(false);
-        textField1.setEnabled(false);
-        textField1.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        jScrollPane2.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+        ResultTextArea.setColumns(20);
+        ResultTextArea.setLineWrap(true);
+        ResultTextArea.setRows(5);
+        jScrollPane2.setViewportView(ResultTextArea);
 
         javax.swing.GroupLayout ResultPanelLayout = new javax.swing.GroupLayout(ResultPanel);
         ResultPanel.setLayout(ResultPanelLayout);
         ResultPanelLayout.setHorizontalGroup(
             ResultPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ResultPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(textField1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 1044, Short.MAX_VALUE)
         );
         ResultPanelLayout.setVerticalGroup(
             ResultPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(ResultPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(textField1, javax.swing.GroupLayout.DEFAULT_SIZE, 172, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 216, Short.MAX_VALUE)
         );
 
-        StopButton.setText("Stop");
-        StopButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
-        RestartButton.setText("Restart");
+        ExtensionButtonPanel.setBackground(new java.awt.Color(255, 255, 255));
+
+        RestartButton.setBackground(new java.awt.Color(45, 118, 232));
+        RestartButton.setForeground(new java.awt.Color(255, 255, 255));
+        RestartButton.setText("Stop");
         RestartButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        RestartButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RestartButtonActionPerformed(evt);
+            }
+        });
 
+        HintButton.setBackground(new java.awt.Color(45, 118, 232));
+        HintButton.setForeground(new java.awt.Color(255, 255, 255));
         HintButton.setText("Hint");
         HintButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        HintButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                HintButtonActionPerformed(evt);
+            }
+        });
+
+        StartButton.setBackground(new java.awt.Color(45, 118, 232));
+        StartButton.setForeground(new java.awt.Color(255, 255, 255));
+        StartButton.setText("Start");
+        StartButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        StartButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                StartButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout ExtensionButtonPanelLayout = new javax.swing.GroupLayout(ExtensionButtonPanel);
         ExtensionButtonPanel.setLayout(ExtensionButtonPanelLayout);
@@ -88,143 +150,278 @@ public class Test extends javax.swing.JFrame {
             ExtensionButtonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(ExtensionButtonPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(StopButton, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(StartButton, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(22, 22, 22)
                 .addComponent(RestartButton, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(HintButton, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(453, Short.MAX_VALUE))
+                .addContainerGap(346, Short.MAX_VALUE))
         );
         ExtensionButtonPanelLayout.setVerticalGroup(
             ExtensionButtonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(StopButton, javax.swing.GroupLayout.DEFAULT_SIZE, 51, Short.MAX_VALUE)
-            .addComponent(RestartButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(RestartButton, javax.swing.GroupLayout.DEFAULT_SIZE, 62, Short.MAX_VALUE)
             .addComponent(HintButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(StartButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
+        TimerLabel.setBackground(new java.awt.Color(255, 255, 255));
         TimerLabel.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
         TimerLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         TimerLabel.setText("15:03");
         TimerLabel.setToolTipText("Timer");
         TimerLabel.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
         TimerLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        TimerLabel.setOpaque(true);
 
-        TimerIconLabel.setText("Clock icon");
+        TimerIconLabel.setBackground(new java.awt.Color(255, 255, 255));
+        TimerIconLabel.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
+        TimerIconLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        TimerIconLabel.setText("00:00");
         TimerIconLabel.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
 
+        jProgressBar1.setBackground(new java.awt.Color(255, 255, 255));
+        jProgressBar1.setForeground(new java.awt.Color(45, 118, 232));
         jProgressBar1.setToolTipText("Overall test time");
         jProgressBar1.setValue(10);
+        jProgressBar1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(45, 118, 232)));
+        jProgressBar1.setOpaque(true);
         jProgressBar1.setStringPainted(true);
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setFont(new java.awt.Font("Monospaced", 0, 18)); // NOI18N
-        jTextArea1.setRows(5);
-        jTextArea1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "User input"));
-        jScrollPane1.setViewportView(jTextArea1);
+        jScrollPane1.setBackground(new java.awt.Color(255, 255, 255));
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(0, 51, 255));
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Test 1");
+        UserInputTextArea.setColumns(20);
+        UserInputTextArea.setFont(new java.awt.Font("Monospaced", 0, 36)); // NOI18N
+        UserInputTextArea.setLineWrap(true);
+        UserInputTextArea.setRows(5);
+        UserInputTextArea.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "User input"));
+        UserInputTextArea.addInputMethodListener(new java.awt.event.InputMethodListener() {
+            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
+            }
+            public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
+                UserInputTextAreaInputMethodTextChanged(evt);
+            }
+        });
+        UserInputTextArea.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                UserInputTextAreaKeyTyped(evt);
+            }
+        });
+        jScrollPane1.setViewportView(UserInputTextArea);
 
+        TestNameLabel.setBackground(new java.awt.Color(45, 118, 232));
+        TestNameLabel.setFont(new java.awt.Font("Tahoma", 1, 36)); // NOI18N
+        TestNameLabel.setForeground(new java.awt.Color(255, 255, 255));
+        TestNameLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        TestNameLabel.setText("Test 1");
+        TestNameLabel.setOpaque(true);
+
+        jProgressBar2.setBackground(new java.awt.Color(255, 255, 255));
+        jProgressBar2.setForeground(new java.awt.Color(45, 118, 232));
         jProgressBar2.setToolTipText("Lession time");
         jProgressBar2.setValue(50);
+        jProgressBar2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(45, 118, 232)));
+        jProgressBar2.setOpaque(true);
         jProgressBar2.setStringPainted(true);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jProgressBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(ExtensionButtonPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(90, 90, 90)
+                        .addComponent(TimerIconLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(TimerLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(34, 34, 34))
+                    .addComponent(jProgressBar2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(TestNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(TestNameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(240, 240, 240)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(TimerLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(TimerIconLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(ExtensionButtonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(28, 28, 28)
+                .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jProgressBar2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 215, Short.MAX_VALUE)
+                .addContainerGap())
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jProgressBar1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(ResultPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(ExtensionButtonPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(TimerIconLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(TimerLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(1, 1, 1))
-                    .addComponent(jProgressBar2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(ResultPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(39, 39, 39)
+                .addGap(104, 104, 104)
                 .addComponent(ResultPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(ExtensionButtonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(TimerLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(TimerIconLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(18, 18, 18)
-                .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jProgressBar2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 196, Short.MAX_VALUE)
-                .addContainerGap())
+                .addContainerGap(403, Short.MAX_VALUE))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void RestartButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RestartButtonActionPerformed
+        Test.testlesson.setPlayCompleted(true);
+    }//GEN-LAST:event_RestartButtonActionPerformed
+
+    private void HintButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_HintButtonActionPerformed
+       if(Test.t2 == null)   return;
+       Test.changeLine = true;
+       Test.t2.interrupt();
+    }//GEN-LAST:event_HintButtonActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        Test.testlesson.setPlayCompleted(true);
+    }//GEN-LAST:event_formWindowClosing
+
+    private void StartButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StartButtonActionPerformed
+//        System.out.println(Test.t);
+//        System.out.println(Test.t2);
+        if(Test.t != null || Test.t2 != null) return;
+        
+        Test.time = new Date();
+        
+        Test.t = new Thread(new Runnable(){
+            @Override
+            public void run(){
+                Test.testlesson.setPlayCompleted(false);
+                Test.testlesson.play(Test.testlesson.getMp3Url());
+            }
+        });
+        Test.t.start();
+        
+        Test.t2 = new Thread(new Runnable(){
+            @Override
+            public void run(){
+                for(int i = 0; i < Test.testlesson.getScript().size(); i++){
+                    while(true){
+                        try {
+                            Thread.sleep(15000);
+                            Test.testlesson.getAudioClip().setMicrosecondPosition(15000000*Test.currentLine);
+                        } catch (InterruptedException ex) {
+                            if(Test.changeLine && Test.currentLine < Test.testlesson.getScript().size() - 1){
+                                Test.currentLine++; 
+                                Test.currentWordInLine = 0;
+                                Test.changeLine = false;
+                                Test.testlesson.getAudioClip().setMicrosecondPosition(15000000*Test.currentLine);
+                                break;
+                            }else{
+                                //reset global variable
+                                Test.t.interrupt();
+                                Test.t = null;
+                                Test.t2 = null;
+                                Test.testlesson.setPlayCompleted(true);
+                                Test.currentLine = 0;
+                                Test.currentWordInLine = 0;
+                                Test.changeLine = false;
+                                
+                                // caculate score
+                                Date cur = new Date();
+                                float time = (cur.getTime() - Test.time.getTime())/1000;
+                                float score = 10*(11 - (float)Test.testlesson.getLength()/time);
+                                if(score < 0)   score = -1 * score;
+                                if(score > 100) score = 100;
+                                Test.saveHistory(score);
+                            }
+                        }    
+                    }
+                }
+                  
+            }
+        });
+        t2.start();  
+    }//GEN-LAST:event_StartButtonActionPerformed
+    private static void saveHistory(float score){
+        History history = new History(Test.acc.getId(), Test.testlesson.getId(), score);
+        TestService testService = new TestService();
+        testService.saveHistory(history);
+    }
+    private void UserInputTextAreaInputMethodTextChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_UserInputTextAreaInputMethodTextChanged
+//        System.out.println(this.UserInputTextArea.getText());
+    }//GEN-LAST:event_UserInputTextAreaInputMethodTextChanged
+
+    private void UserInputTextAreaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_UserInputTextAreaKeyTyped
+        String enteredString = this.UserInputTextArea.getText();
+        String currentWord = Test.testlesson.getScript().get(Test.currentLine)[Test.currentWordInLine];
+//        this.printLine(Test.currentLine);
+        if(currentWord.toLowerCase().startsWith(enteredString.toLowerCase())){
+            if(enteredString.toLowerCase().equals(currentWord.toLowerCase())){
+                System.out.println(currentWord + " ");
+                if(Test.currentWordInLine < Test.testlesson.getScript().get(Test.currentLine).length - 1)
+                    Test.currentWordInLine++;
+                else{
+                    if(Test.t2 != null){
+                        Test.changeLine = true;
+                        Test.t2.interrupt();
+                    }else{
+                        Test.currentLine++;
+                        Test.currentWordInLine = 0;
+                    }
+                }
+                this.UserInputTextArea.setText("");
+                Test.successString += currentWord + " ";
+                this.ResultTextArea.setText(Test.successString);
+            }
+        }else{
+            this.UserInputTextArea.setText(enteredString.substring(0, enteredString.length()-1));
+        }
+    }//GEN-LAST:event_UserInputTextAreaKeyTyped
+    
+    private void printLine(int index){
+        String[] arr = Test.testlesson.getScript().get(Test.currentLine);
+        for(int i = 0; i < arr.length; i++){
+            System.out.print(arr[i] + " ");
+        }
+        System.out.println();
+    }
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Test.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Test.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Test.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Test.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Test().setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel ExtensionButtonPanel;
     private javax.swing.JButton HintButton;
     private javax.swing.JButton RestartButton;
     private javax.swing.JPanel ResultPanel;
-    private javax.swing.JButton StopButton;
+    private javax.swing.JTextArea ResultTextArea;
+    private javax.swing.JButton StartButton;
+    private javax.swing.JLabel TestNameLabel;
     private javax.swing.JLabel TimerIconLabel;
     private javax.swing.JLabel TimerLabel;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JTextArea UserInputTextArea;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JProgressBar jProgressBar2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
-    private java.awt.TextField textField1;
+    private javax.swing.JScrollPane jScrollPane2;
     // End of variables declaration//GEN-END:variables
 }
