@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -124,5 +125,33 @@ public class TestDao {
             Logger.getLogger(TestDao.class.getName()).log(Level.SEVERE, null, ex);
             return 0;
         }
+    }
+    
+    public ArrayList<History> getHistory(){
+        ArrayList<History> historyList = new ArrayList<History>();
+        PreparedStatement prdStatement;
+        ResultSet rs;
+        String query;
+        
+        try{
+            query = "SELECT * FROM test_history th "
+                    + "INNER JOIN test t "
+                    + "ON th.testId = t.id "
+                    + "ORDER BY conpletedDate DESC";
+            
+            prdStatement = conn.prepareStatement(query);
+            rs = prdStatement.executeQuery();
+            
+            while(rs.next()){
+                History history = new History(rs.getInt("usrId"), rs.getInt("testId"), 
+                        new Date(rs.getDate("conpletedDate").getTime()), rs.getFloat("score"),
+                        rs.getString("t.testName"));
+                historyList.add(history);
+            }
+        }catch(SQLException e){
+            System.err.println(e.getMessage());
+            return null;
+        }
+        return historyList;
     }
 }

@@ -18,14 +18,38 @@ public class History {
     private int testId;
     private Date time;
     private float score;
-
+    private String testTitle;
     public History(int userId, int testId, float score) {
         this.userId = userId;
         this.testId = testId;
         this.time = new Date();
         this.score = score;
     }
+    public History(int userId, int testId, Date time, float score) {
+        this.userId = userId;
+        this.testId = testId;
+        this.time = time;
+        this.score = score;
+    }
 
+    public History(int userId, int testId, Date time, float score, String title) {
+        this.userId = userId;
+        this.testId = testId;
+        this.time = time;
+        this.score = score;
+        this.testTitle = title;
+    }
+
+    public String getTestTitle() {
+        return testTitle;
+    }
+
+    public void setTestTitle(String testTitle) {
+        this.testTitle = testTitle;
+    }
+    
+    
+    
     public int getUserId() {
         return userId;
     }

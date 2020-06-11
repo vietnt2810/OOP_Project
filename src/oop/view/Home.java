@@ -5,18 +5,25 @@
  */
 package oop.view;
 
+import static com.sun.xml.internal.fastinfoset.alphabet.BuiltInRestrictedAlphabets.table;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Toolkit;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import javax.swing.JFrame;
+import java.util.Iterator;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 import oop.model.Account;
+import oop.model.History;
 import oop.model.TestLesson;
-import oop.model.TestSection;
 import oop.service.TestService;
 import oop.service.UserService;
 import static oop.utils.Utils.getImageUrl;
@@ -48,6 +55,7 @@ public class Home extends javax.swing.JFrame {
         
         Acc = new Account(acc.getId(), acc.getUsername(), acc.getPassword(),acc.getUser(), acc.getAvatarUlr());
         this.setContentForStudent(acc);
+        this.setHistoryTable(acc);
         this.SetScoreChart(acc);
         this.SetTimeChart(acc);
         
@@ -1104,33 +1112,10 @@ public class Home extends javax.swing.JFrame {
         jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         jScrollPane1.setAutoscrolls(true);
 
-        HistoryTable.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        HistoryTable.setFont(new java.awt.Font("Segoe UI", 0, 13)); // NOI18N
         HistoryTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+
             },
             new String [] {
                 "Date", "Time", "Test title", "Test Time", "Score"
@@ -1144,10 +1129,15 @@ public class Home extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        HistoryTable.setAutoscrolls(false);
         HistoryTable.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         HistoryTable.setFocusable(false);
+        HistoryTable.setGridColor(new java.awt.Color(153, 153, 153));
+        HistoryTable.setIntercellSpacing(new java.awt.Dimension(0, 0));
+        HistoryTable.setRowHeight(25);
+        HistoryTable.setSelectionBackground(new java.awt.Color(232, 57, 95));
         HistoryTable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        HistoryTable.setShowVerticalLines(false);
+        HistoryTable.getTableHeader().setResizingAllowed(false);
         HistoryTable.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(HistoryTable);
 
@@ -1427,9 +1417,6 @@ public class Home extends javax.swing.JFrame {
         resetColor(StudentPanel);
     }//GEN-LAST:event_StudentPanelMouseExited
      
-    
-    
-    
     int xx,xy;
     private void HeaderMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_HeaderMousePressed
         // TODO add your handling code here:
@@ -1756,6 +1743,38 @@ public class Home extends javax.swing.JFrame {
     public void setColor(JPanel panel)
     {
         panel.setBackground(new java.awt.Color(197, 197, 197));
+    }
+    
+    public void setHistoryTable(Account acc){
+        TestService testService = new TestService();
+        DefaultTableModel model = (DefaultTableModel) this.HistoryTable.getModel();
+        ArrayList<History> historyList = testService.getHistory();
+        Iterator<History> iter = historyList.iterator();
+        
+        this.HistoryTable.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 12));
+        this.HistoryTable.getTableHeader().setOpaque(false);
+        this.HistoryTable.getTableHeader().setBackground(new Color(32,136,203));
+        this.HistoryTable.getTableHeader().setForeground(Color.white);
+        
+        while(iter.hasNext()){
+            History history = iter.next();
+            this.addRow(history, model);
+        }
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment( SwingConstants.CENTER );
+        this.HistoryTable.setDefaultRenderer(String.class, centerRenderer);
+        
+    }
+    
+    private void  addRow(History history, DefaultTableModel model){
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");  
+        SimpleDateFormat timeFormatter = new SimpleDateFormat("HH:mm");  
+
+        String date = dateFormatter.format(history.getTime()); 
+        String time = timeFormatter.format(history.getTime());
+        model.addRow(new Object[]{
+            date, time, history.getTestTitle(), history.getScore(),history.getScore()
+        });
     }
     private void SetScoreChart(Account acc){
            DefaultCategoryDataset chartData = new DefaultCategoryDataset();

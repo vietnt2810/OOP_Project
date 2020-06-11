@@ -23,11 +23,7 @@ public class TestService {
     public TestService(){
         this.testDao = new TestDao();
     }
-    
-//    public ArrayList<String> getTestList(int level){
-//        return this.testDao.getTestList(level);
-//    }
-    
+       
     
     public ListModel getTestList(int level){
         DefaultListModel list = new DefaultListModel();
@@ -50,5 +46,9 @@ public class TestService {
     public boolean saveHistory(History history){
         int affectedRow = testDao.saveHistory(history);
         return affectedRow > 0;
+    }
+    
+    public ArrayList<History> getHistory(){
+        return testDao.getHistory();
     }
 }
