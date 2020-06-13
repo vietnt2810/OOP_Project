@@ -8,10 +8,7 @@ package oop.view;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import static oop.utils.Utils.setImageForLabel;
-import javax.sound.sampled.Clip;
+import javax.swing.JOptionPane;
 import oop.model.Account;
 import oop.model.History;
 import oop.model.TestLesson;
@@ -35,6 +32,7 @@ public class Test extends javax.swing.JFrame {
     private static Thread t2;
     private static String successString;
     private static Date time;
+    
     
     public Test(TestLesson testLesson, Account acc) {
         Test.testlesson = testLesson;
@@ -69,8 +67,9 @@ public class Test extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         ExtensionButtonPanel = new javax.swing.JPanel();
         RestartButton = new javax.swing.JButton();
-        HintButton = new javax.swing.JButton();
+        SkipButton = new javax.swing.JButton();
         StartButton = new javax.swing.JButton();
+        HintButton = new javax.swing.JButton();
         TimerLabel = new javax.swing.JLabel();
         TimerIconLabel = new javax.swing.JLabel();
         jProgressBar1 = new javax.swing.JProgressBar();
@@ -124,13 +123,13 @@ public class Test extends javax.swing.JFrame {
             }
         });
 
-        HintButton.setBackground(new java.awt.Color(45, 118, 232));
-        HintButton.setForeground(new java.awt.Color(255, 255, 255));
-        HintButton.setText("Hint");
-        HintButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        HintButton.addActionListener(new java.awt.event.ActionListener() {
+        SkipButton.setBackground(new java.awt.Color(45, 118, 232));
+        SkipButton.setForeground(new java.awt.Color(255, 255, 255));
+        SkipButton.setText("Skip");
+        SkipButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        SkipButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                HintButtonActionPerformed(evt);
+                SkipButtonActionPerformed(evt);
             }
         });
 
@@ -144,6 +143,16 @@ public class Test extends javax.swing.JFrame {
             }
         });
 
+        HintButton.setBackground(new java.awt.Color(45, 118, 232));
+        HintButton.setForeground(new java.awt.Color(255, 255, 255));
+        HintButton.setText("Hint");
+        HintButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        HintButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                HintButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout ExtensionButtonPanelLayout = new javax.swing.GroupLayout(ExtensionButtonPanel);
         ExtensionButtonPanel.setLayout(ExtensionButtonPanelLayout);
         ExtensionButtonPanelLayout.setHorizontalGroup(
@@ -154,14 +163,17 @@ public class Test extends javax.swing.JFrame {
                 .addGap(22, 22, 22)
                 .addComponent(RestartButton, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(SkipButton, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(HintButton, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(346, Short.MAX_VALUE))
+                .addContainerGap(215, Short.MAX_VALUE))
         );
         ExtensionButtonPanelLayout.setVerticalGroup(
             ExtensionButtonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(RestartButton, javax.swing.GroupLayout.DEFAULT_SIZE, 62, Short.MAX_VALUE)
-            .addComponent(HintButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(SkipButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(StartButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(HintButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         TimerLabel.setBackground(new java.awt.Color(255, 255, 255));
@@ -293,11 +305,11 @@ public class Test extends javax.swing.JFrame {
         Test.testlesson.setPlayCompleted(true);
     }//GEN-LAST:event_RestartButtonActionPerformed
 
-    private void HintButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_HintButtonActionPerformed
+    private void SkipButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SkipButtonActionPerformed
        if(Test.t2 == null)   return;
        Test.changeLine = true;
        Test.t2.interrupt();
-    }//GEN-LAST:event_HintButtonActionPerformed
+    }//GEN-LAST:event_SkipButtonActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         Test.testlesson.setPlayCompleted(true);
@@ -350,7 +362,8 @@ public class Test extends javax.swing.JFrame {
                                 float score = 10*(11 - (float)Test.testlesson.getLength()/time);
                                 if(score < 0)   score = -1 * score;
                                 if(score > 100) score = 100;
-                                Test.saveHistory(score);
+                                Test.saveHistory(score, time);
+                                JOptionPane.showMessageDialog(Test.this,"You finished the test with " + score,"Good jobs", JOptionPane.OK_OPTION);
                             }
                         }    
                     }
@@ -360,8 +373,8 @@ public class Test extends javax.swing.JFrame {
         });
         t2.start();  
     }//GEN-LAST:event_StartButtonActionPerformed
-    private static void saveHistory(float score){
-        History history = new History(Test.acc.getId(), Test.testlesson.getId(), score);
+    private static void saveHistory(float score, float time){
+        History history = new History(Test.acc.getId(), Test.testlesson.getId(), score, time);
         TestService testService = new TestService();
         testService.saveHistory(history);
     }
@@ -370,11 +383,16 @@ public class Test extends javax.swing.JFrame {
     }//GEN-LAST:event_UserInputTextAreaInputMethodTextChanged
 
     private void UserInputTextAreaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_UserInputTextAreaKeyTyped
+        String specialCharacters=" !#$%&'()*+,-./:;<=>?@[]^_`{|}";
+        boolean flag = false;
         String enteredString = this.UserInputTextArea.getText();
         String currentWord = Test.testlesson.getScript().get(Test.currentLine)[Test.currentWordInLine];
-//        this.printLine(Test.currentLine);
-        if(currentWord.toLowerCase().startsWith(enteredString.toLowerCase())){
-            if(enteredString.toLowerCase().equals(currentWord.toLowerCase())){
+
+        if(specialCharacters.contains(currentWord)){
+            flag = true;
+        }
+        if(currentWord.toLowerCase().startsWith(enteredString.toLowerCase()) || flag){
+            if(enteredString.toLowerCase().equals(currentWord.toLowerCase()) || flag){
                 System.out.println(currentWord + " ");
                 if(Test.currentWordInLine < Test.testlesson.getScript().get(Test.currentLine).length - 1)
                     Test.currentWordInLine++;
@@ -390,11 +408,32 @@ public class Test extends javax.swing.JFrame {
                 this.UserInputTextArea.setText("");
                 Test.successString += currentWord + " ";
                 this.ResultTextArea.setText(Test.successString);
+                flag = false;
             }
         }else{
             this.UserInputTextArea.setText(enteredString.substring(0, enteredString.length()-1));
         }
     }//GEN-LAST:event_UserInputTextAreaKeyTyped
+
+    private void HintButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_HintButtonActionPerformed
+        String currentWord = Test.testlesson.getScript().get(Test.currentLine)[Test.currentWordInLine];
+        if(Test.testlesson.getHint().contains(currentWord)){
+            if(Test.currentWordInLine < Test.testlesson.getScript().get(Test.currentLine).length - 1)
+                    Test.currentWordInLine++;
+                else{
+                    if(Test.t2 != null){
+                        Test.changeLine = true;
+                        Test.t2.interrupt();
+                    }else{
+                        Test.currentLine++;
+                        Test.currentWordInLine = 0;
+                    }
+                }
+                this.UserInputTextArea.setText("");
+                Test.successString += currentWord + " ";
+                this.ResultTextArea.setText(Test.successString);
+        }
+    }//GEN-LAST:event_HintButtonActionPerformed
     
     private void printLine(int index){
         String[] arr = Test.testlesson.getScript().get(Test.currentLine);
@@ -413,6 +452,7 @@ public class Test extends javax.swing.JFrame {
     private javax.swing.JButton RestartButton;
     private javax.swing.JPanel ResultPanel;
     private javax.swing.JTextArea ResultTextArea;
+    private javax.swing.JButton SkipButton;
     private javax.swing.JButton StartButton;
     private javax.swing.JLabel TestNameLabel;
     private javax.swing.JLabel TimerIconLabel;

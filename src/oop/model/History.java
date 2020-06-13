@@ -19,6 +19,8 @@ public class History {
     private Date time;
     private float score;
     private String testTitle;
+    private float timeConsuming;
+    
     public History(int userId, int testId, float score) {
         this.userId = userId;
         this.testId = testId;
@@ -38,6 +40,14 @@ public class History {
         this.time = time;
         this.score = score;
         this.testTitle = title;
+    }
+    
+    public History(int userId, int testId, float score, float timeConsuming) {
+        this.userId = userId;
+        this.testId = testId;
+        this.time = new Date();
+        this.score = score;
+        this.timeConsuming = timeConsuming;
     }
 
     public String getTestTitle() {

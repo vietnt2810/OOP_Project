@@ -31,6 +31,8 @@ public class TestLesson implements LineListener{
     private String mp3Url;
     private ArrayList<String[]> script;
     private ArrayList<String> hint;
+   
+    
     private boolean playCompleted;
     private Clip audioClip;
 

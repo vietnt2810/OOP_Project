@@ -5,7 +5,6 @@
  */
 package oop.view;
 
-import static com.sun.xml.internal.fastinfoset.alphabet.BuiltInRestrictedAlphabets.table;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -14,8 +13,10 @@ import java.awt.Font;
 import java.awt.Toolkit;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
-import javax.swing.JLabel;
+import java.util.Set;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
@@ -24,6 +25,7 @@ import javax.swing.table.DefaultTableModel;
 import oop.model.Account;
 import oop.model.History;
 import oop.model.TestLesson;
+import oop.service.StatisticService;
 import oop.service.TestService;
 import oop.service.UserService;
 import static oop.utils.Utils.getImageUrl;
@@ -823,19 +825,19 @@ public class Home extends javax.swing.JFrame {
             Level1PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(Level1PanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 230, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(Level1PanelLayout.createSequentialGroup()
-                .addGap(67, 67, 67)
+                .addGap(56, 56, 56)
                 .addComponent(TestLv1Button, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(67, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         Level1PanelLayout.setVerticalGroup(
             Level1PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(Level1PanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(43, 43, 43)
+                .addGap(37, 37, 37)
                 .addComponent(TestLv1Button, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -946,7 +948,7 @@ public class Home extends javax.swing.JFrame {
                 .addGroup(TestLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(TestLayout.createSequentialGroup()
                         .addComponent(Level1Panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
                         .addComponent(Level2Panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(27, 27, 27)
                         .addComponent(Level3Panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -1777,45 +1779,45 @@ public class Home extends javax.swing.JFrame {
         });
     }
     private void SetScoreChart(Account acc){
-           DefaultCategoryDataset chartData = new DefaultCategoryDataset();
-           chartData.addValue(70.6, "Level 1", "12/1");
-           chartData.addValue(73.6, "Level 1", "13/1");
-           chartData.addValue(60.6, "Level 1", "14/1");
-           chartData.addValue(90.6, "Level 1", "15/1");
-           chartData.addValue(60.6, "Level 1", "16/1");
-
-           chartData.addValue(39.6, "Level 2", "12/1");
-           chartData.addValue(45.6, "Level 2", "13/1");
-           chartData.addValue(51.4, "Level 2", "14/1");
-           chartData.addValue(53.2, "Level 2", "15/1");
-           chartData.addValue(80.0, "Level 2", "16/1");
-
-           chartData.addValue(59.6, "Level 3", "12/1");
-           chartData.addValue(65.6, "Level 3", "13/1");
-           chartData.addValue(51.4, "Level 3", "14/1");
-           chartData.addValue(23.2, "Level 3", "15/1");
-           chartData.addValue(80.0, "Level 3", "16/1");
-
-           JFreeChart chart = ChartFactory.createLineChart("Average Score Chart", "Date", "Avg Score", chartData);
-           chart.getPlot().setBackgroundPaint(Color.decode("#26191b"));
+        int i = 1;
+        HashMap<Date,Float> ele = null;
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM"); 
+        DefaultCategoryDataset chartData = new DefaultCategoryDataset();
+  
+        StatisticService ser = new StatisticService();
+        ArrayList<HashMap<Date,Float>> list = ser.getInfoForScoreChart(acc.getId());
+        Iterator iter = list.iterator();
+        while(iter.hasNext()){
+            ele = (HashMap<Date, Float>) iter.next();
+            Set<Date> keySet = ele.keySet();
+            for (Date key : keySet) {
+                chartData.addValue(ele.get(key) , "Level " + i, dateFormatter.format(key));         
+            }
+            i++;
+        }
+        
+        JFreeChart chart = ChartFactory.createLineChart("Average Score Chart", "Date", "Avg Score", chartData);
+        chart.getPlot().setBackgroundPaint(Color.decode("#26191b"));
 
 
-           ChartPanel chartPanel = new ChartPanel(chart);
-           this.AvgScoreChartPanel.removeAll();
-           this.AvgScoreChartPanel.add(chartPanel, BorderLayout.CENTER);
-           this.AvgScoreChartPanel.validate();
+        ChartPanel chartPanel = new ChartPanel(chart);
+        this.AvgScoreChartPanel.removeAll();
+        this.AvgScoreChartPanel.add(chartPanel, BorderLayout.CENTER);
+        this.AvgScoreChartPanel.validate();
        }
 
 
     private void SetTimeChart(Account acc){
            DefaultCategoryDataset chartData = new DefaultCategoryDataset();
-           chartData.addValue(1.3, "Stydy time", "12/1");
-           chartData.addValue(0.3, "Stydy time", "13/1");
-           chartData.addValue(0.1, "Stydy time", "14/1");
-           chartData.addValue(0, "Stydy time", "15/1");
-           chartData.addValue(2, "Stydy time", "16/1");
-           chartData.addValue(1.5, "Stydy time", "17/1");
-           chartData.addValue(1.6, "Stydy time", "18/1");
+           StatisticService ser = new StatisticService();
+           SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM"); 
+           
+           HashMap<Date,Float> hashMap = ser.getInfoForTimeChart(acc.getId());
+           Set<Date> keySet = hashMap.keySet();
+           for (Date key : keySet) {
+                chartData.addValue(hashMap.get(key) , "Time per day", dateFormatter.format(key));
+                System.out.println(key + " - " + hashMap.get(key));
+            }
 
            JFreeChart chart = ChartFactory.createLineChart("Stydy time Chart", "Date", "Stydy time", chartData);
            chart.getPlot().setBackgroundPaint(Color.decode("#26191b"));

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th6 10, 2020 lúc 12:16 PM
+-- Thời gian đã tạo: Th6 13, 2020 lúc 03:20 PM
 -- Phiên bản máy phục vụ: 10.4.11-MariaDB
 -- Phiên bản PHP: 7.4.5
 
@@ -54,8 +54,22 @@ CREATE TABLE `avg_score` (
   `usrId` int(11) NOT NULL,
   `level1Score` float NOT NULL CHECK (`level1Score` between 0 and 100),
   `level2Score` float NOT NULL CHECK (`level2Score` between 0 and 100),
-  `level3Score` float NOT NULL CHECK (`level3Score` between 0 and 100)
+  `level3Score` float NOT NULL CHECK (`level3Score` between 0 and 100),
+  `date` date DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_vietnamese_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `avg_score`
+--
+
+INSERT INTO `avg_score` (`id`, `usrId`, `level1Score`, `level2Score`, `level3Score`, `date`) VALUES
+(1, 2, 66, 55, 44, '2020-11-11'),
+(4, 2, 36, 85, 74, '2020-11-12'),
+(5, 2, 76, 75, 48, '2020-11-13'),
+(6, 2, 86, 45, 54, '2020-11-14'),
+(7, 2, 96, 55, 44, '2020-11-15'),
+(8, 1, 76, 15, 46, '2020-11-16'),
+(9, 1, 86, 55, 64, '2020-11-17');
 
 -- --------------------------------------------------------
 
@@ -79,7 +93,7 @@ CREATE TABLE `test` (
 --
 
 INSERT INTO `test` (`id`, `testName`, `testLevel`, `totalTime`, `script`, `hint`, `mp3Url`, `demoScript`) VALUES
-(1, 'test1', 1, 130, 'For the past 20 years , I have been helping Maylaysian and other Southeast Asians to speak better English . And through training thousands of Southeast Asians , I have discovered a very surprising truth . ,, I have discovered that how well somebody communicates in English actually has very little to do with their English level . It has a lot to do with their attitude towards English . ,, There are people out there who have a very low level of English , and they can communicate very very well . One of them that I remember was a student , a participant of mine , named Faizal . He was a factory supervisor - English level very very low but this guy ,, could just sit and listen to anybody , very calmly , clearly , and then he could respond , absolutely express his thoughts beautifully , at a very low level of English . So , today I want to share with you : ,, what is so different about people like Faizal ? How do they do it ? And second of all , why is this so important not only to you , but to your children , to your community , and to the future of Malaysia ? ,, And third of all , what’s one thing you can do , starting today , if you want to speak with that calm , clear confidence that people like Faizal have . First of all , what is so different ? How do people like Faizal do it ? ,, To answer that question , I’m going to take you back about 10 years , okay ? I was training staff at that time , and my daughter , at that time , was taking piano lessons . And I started to notice two really strong similarities ,, between my daughter’s attitude or thinking towards playing the piano and a lot of Malaysians’ thinking or attitude towards English . First of all , I should tell you my daughter ,, absolutely hated piano , hated the lessons , hated practicing . This is my daughter practicing piano , okay ? This is as good as it got .', 'Maylaysian Faizal', './wav/test1.wav', 'demo1'),
+(1, 'test1', 1, 130, 'For the past 20 years , I have been helping Maylaysian and other Southeast Asians to speak better English . And through training thousands of Southeast Asians , I have discovered a very surprising truth . ,, I have discovered that how well somebody communicates in English actually has very little to do with their English level . It has a lot to do with their attitude towards English . ,, There are people out there who have a very low level of English , and they can communicate very very well . One of them that I remember was a student , a participant of mine , named Faizal . He was a factory supervisor - English level very very low but this guy ,, could just sit and listen to anybody , very calmly , clearly , and then he could respond , absolutely express his thoughts beautifully , at a very low level of English . So , today I want to share with you : ,, what is so different about people like Faizal ? How do they do it ? And second of all , why is this so important not only to you , but to your children , to your community , and to the future of Malaysia ? ,, And third of all , what’s one thing you can do , starting today , if you want to speak with that calm , clear confidence that people like Faizal have . First of all , what is so different ? How do people like Faizal do it ? ,, To answer that question , I’m going to take you back about 10 years , okay ? I was training staff at that time , and my daughter , at that time , was taking piano lessons . And I started to notice two really strong similarities ,, between my daughter’s attitude or thinking towards playing the piano and a lot of Malaysians’ thinking or attitude towards English . First of all , I should tell you my daughter ,, absolutely hated piano , hated the lessons , hated practicing . This is my daughter practicing piano , okay ? This is as good as it got .', 'For the past 20 years , I have been helping Maylaysian and other Southeast Asians to speak better English . And through training thousands of Southeast Asians , I have discovered a very surprising truth . ,, I have discovered that how well somebody communicates in English actually has very little to do with their English level . It has a lot to do with their attitude towards English . ,, There are people out there who have a very low level of English , and they can communicate very very well . One of them that I remember was a student , a participant of mine , named Faizal . He was a factory supervisor - English level very very low but this guy ,, could just sit and listen to anybody , very calmly , clearly , and then he could respond , absolutely express his thoughts beautifully , at a very low level of English . So , today I want to share with you : ,, what is so different about people like Faizal ? How do they do it ? And second of all , why is this so important not only to you , but to your children , to your community , and to the future of Malaysia ? ,, And third of all , what’s one thing you can do , starting today , if you want to speak with that calm , clear confidence that people like Faizal have . First of all , what is so different ? How do people like Faizal do it ? ,, To answer that question , I’m going to take you back about 10 years , okay ? I was training staff at that time , and my daughter , at that time , was taking piano lessons . And I started to notice two really strong similarities ,, between my daughter’s attitude or thinking towards playing the piano and a lot of Malaysians’ thinking or attitude towards English . First of all , I should tell you my daughter ,, absolutely hated piano , hated the lessons , hated practicing . This is my daughter practicing piano , okay ? This is as good as it got .', './wav/test1.wav', 'demo1'),
 (2, 'test2', 2, 130, 'For the past 20 years ,,  I have been helping ,, Maylaysian and other ,, Southeast Asians to ,,  speak better English ,, And through training thousands of ,, Southeast Asians ,, I have discovered a ,, very surprising truth . ', 'Maylaysian Faizal', './wav/test1.wav', 'demo2'),
 (3, 'test3', 2, 130, 'For the past 20 years , I have been helping Maylaysian and other Southeast Asians to speak better English . And through training thousands of Southeast Asians , I have discovered a very surprising truth . ,, I have discovered that how well somebody communicates in English actually has very little to do with their English level . It has a lot to do with their attitude towards English . ,, There are people out there who have a very low level of English , and they can communicate very very well . One of them that I remember was a student , a participant of mine , named Faizal . He was a factory supervisor - English level very very low but this guy ,, could just sit and listen to anybody , very calmly , clearly , and then he could respond , absolutely express his thoughts beautifully , at a very low level of English . So , today I want to share with you : ,, what is so different about people like Faizal ? How do they do it ? And second of all , why is this so important not only to you , but to your children , to your community , and to the future of Malaysia ? ,, And third of all , what’s one thing you can do , starting today , if you want to speak with that calm , clear confidence that people like Faizal have . First of all , what is so different ? How do people like Faizal do it ? ,, To answer that question , I’m going to take you back about 10 years , okay ? I was training staff at that time , and my daughter , at that time , was taking piano lessons . And I started to notice two really strong similarities ,, between my daughter’s attitude or thinking towards playing the piano and a lot of Malaysians’ thinking or attitude towards English . First of all , I should tell you my daughter ,, absolutely hated piano , hated the lessons , hated practicing . This is my daughter practicing piano , okay ? This is as good as it got .', 'Maylaysian Faizal', './wav/test3.wav', 'demo3'),
 (4, 'test4', 3, 130, 'For the past 20 years , I have been helping Maylaysian and other Southeast Asians to speak better English . And through training thousands of Southeast Asians , I have discovered a very surprising truth . ,, I have discovered that how well somebody communicates in English actually has very little to do with their English level . It has a lot to do with their attitude towards English . ,, There are people out there who have a very low level of English , and they can communicate very very well . One of them that I remember was a student , a participant of mine , named Faizal . He was a factory supervisor - English level very very low but this guy ,, could just sit and listen to anybody , very calmly , clearly , and then he could respond , absolutely express his thoughts beautifully , at a very low level of English . So , today I want to share with you : ,, what is so different about people like Faizal ? How do they do it ? And second of all , why is this so important not only to you , but to your children , to your community , and to the future of Malaysia ? ,, And third of all , what’s one thing you can do , starting today , if you want to speak with that calm , clear confidence that people like Faizal have . First of all , what is so different ? How do people like Faizal do it ? ,, To answer that question , I’m going to take you back about 10 years , okay ? I was training staff at that time , and my daughter , at that time , was taking piano lessons . And I started to notice two really strong similarities ,, between my daughter’s attitude or thinking towards playing the piano and a lot of Malaysians’ thinking or attitude towards English . First of all , I should tell you my daughter ,, absolutely hated piano , hated the lessons , hated practicing . This is my daughter practicing piano , okay ? This is as good as it got .', 'Maylaysian Faizal', './wav/test1.wav', 'demo4');
@@ -95,17 +109,20 @@ CREATE TABLE `test_history` (
   `usrId` int(11) NOT NULL,
   `testId` int(11) NOT NULL,
   `conpletedDate` datetime NOT NULL,
-  `score` float NOT NULL
+  `score` float NOT NULL,
+  `completeTime` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_vietnamese_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `test_history`
 --
 
-INSERT INTO `test_history` (`id`, `usrId`, `testId`, `conpletedDate`, `score`) VALUES
-(1, 1, 2, '2020-06-10 00:00:00', -8.18182),
-(2, 1, 2, '2020-06-10 00:00:00', -75.7143),
-(3, 1, 2, '2020-06-10 00:00:00', 215);
+INSERT INTO `test_history` (`id`, `usrId`, `testId`, `conpletedDate`, `score`, `completeTime`) VALUES
+(1, 2, 2, '2020-06-09 00:00:00', 20, 250),
+(2, 1, 2, '2020-06-09 00:00:00', 75, 150),
+(3, 1, 2, '2020-06-11 00:00:00', 100, 120),
+(4, 1, 1, '2020-06-12 00:00:00', 28.75, 400),
+(5, 2, 3, '2020-06-13 00:00:00', 8.18182, 500);
 
 -- --------------------------------------------------------
 
@@ -163,6 +180,7 @@ ALTER TABLE `account`
 --
 ALTER TABLE `avg_score`
   ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `date` (`date`),
   ADD KEY `usrId` (`usrId`);
 
 --
@@ -207,7 +225,7 @@ ALTER TABLE `account`
 -- AUTO_INCREMENT cho bảng `avg_score`
 --
 ALTER TABLE `avg_score`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT cho bảng `test`
@@ -219,7 +237,7 @@ ALTER TABLE `test`
 -- AUTO_INCREMENT cho bảng `test_history`
 --
 ALTER TABLE `test_history`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT cho bảng `test_section`
