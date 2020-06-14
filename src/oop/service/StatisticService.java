@@ -29,4 +29,8 @@ public class StatisticService {
    public HashMap<Date,Float> getInfoForTimeChart(int usrId){
        return statisticDao.getInfoForTimeChart(usrId);
    }
+   
+   public void calculateAvgScore(int usrId){
+       statisticDao.calculateAvgScore(usrId);
+   }
 }

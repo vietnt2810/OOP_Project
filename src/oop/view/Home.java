@@ -1485,6 +1485,8 @@ public class Home extends javax.swing.JFrame {
     }//GEN-LAST:event_LogOutPanelMouseExited
 
     private void StudentPanelMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_StudentPanelMousePressed
+        this.updateAcc();
+        this.setContentForStudent(Acc);
         CardLayout cardLayout = (CardLayout)this.Content.getLayout();
         cardLayout.show(this.Content, "StudentCard");
     }//GEN-LAST:event_StudentPanelMousePressed
@@ -1528,6 +1530,8 @@ public class Home extends javax.swing.JFrame {
     }//GEN-LAST:event_TestNextButtonMousePressed
 
     private void StatisticPanelMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_StatisticPanelMousePressed
+        this.SetScoreChart(Acc);
+        this.SetTimeChart(Acc);
         CardLayout cardLayout = (CardLayout)this.Content.getLayout();
         cardLayout.show(this.Content, "StatisticCard");
     }//GEN-LAST:event_StatisticPanelMousePressed
@@ -1559,6 +1563,8 @@ public class Home extends javax.swing.JFrame {
     }//GEN-LAST:event_StatisticNextButtonMousePressed
 
     private void HistoryPanelMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_HistoryPanelMousePressed
+        this.setHistoryTable(Acc);
+        
         CardLayout cardLayout = (CardLayout)this.Content.getLayout();
         cardLayout.show(this.Content, "HistoryCard"); 
     }//GEN-LAST:event_HistoryPanelMousePressed
@@ -1634,7 +1640,38 @@ public class Home extends javax.swing.JFrame {
     }//GEN-LAST:event_ResetPassButtonMouseExited
 
     private void ResetPassButtonMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ResetPassButtonMousePressed
-        // TODO add your handling code here:
+        String oldPass="";
+        String newPass="";
+        String confirmPass="";
+        UserService us = new UserService();
+        oldPass = (String) JOptionPane.showInputDialog(this, "Old password",
+        "",JOptionPane.PLAIN_MESSAGE);  
+        if(!oldPass.isEmpty()){
+            Account a = us.validateLogin(Acc.getUsername(), oldPass);
+            if(a == null){   
+                JOptionPane.showMessageDialog(this.rootPane, "Wrong password","ERROR", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+        }
+        newPass = (String) JOptionPane.showInputDialog(this, "New password",
+            "",JOptionPane.PLAIN_MESSAGE);
+        if(!newPass.isEmpty())
+            confirmPass = (String) JOptionPane.showInputDialog(this, "Comfirm password",
+            "",JOptionPane.PLAIN_MESSAGE);
+        while(!newPass.equals(confirmPass)){
+            JOptionPane.showMessageDialog(this.rootPane, "Passwords did not match","ERROR", JOptionPane.ERROR_MESSAGE);
+            newPass = (String) JOptionPane.showInputDialog(this, "New password",
+                "",JOptionPane.PLAIN_MESSAGE);
+            if(!newPass.isEmpty())
+                confirmPass = (String) JOptionPane.showInputDialog(this, "Comfirm password",
+                    "",JOptionPane.PLAIN_MESSAGE);
+        }
+        if(us.changePass(Acc.getId(), newPass)){
+            this.updateAcc(newPass);
+            JOptionPane.showMessageDialog(this.rootPane, "Changing password succeeded","INFORMATION", JOptionPane.INFORMATION_MESSAGE);
+        }
+        
     }//GEN-LAST:event_ResetPassButtonMousePressed
 
     private void EditInfoButtonMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_EditInfoButtonMouseEntered
@@ -1750,13 +1787,18 @@ public class Home extends javax.swing.JFrame {
     public void setHistoryTable(Account acc){
         TestService testService = new TestService();
         DefaultTableModel model = (DefaultTableModel) this.HistoryTable.getModel();
-        ArrayList<History> historyList = testService.getHistory();
+        ArrayList<History> historyList = testService.getHistory(Acc);
         Iterator<History> iter = historyList.iterator();
-        
+        while(model.getRowCount() > 0){
+            for(int i = 0; i < model.getRowCount(); i++){
+                model.removeRow(i);
+            }
+        }
         this.HistoryTable.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 12));
         this.HistoryTable.getTableHeader().setOpaque(false);
         this.HistoryTable.getTableHeader().setBackground(new Color(32,136,203));
         this.HistoryTable.getTableHeader().setForeground(Color.white);
+        
         
         while(iter.hasNext()){
             History history = iter.next();
@@ -1771,11 +1813,11 @@ public class Home extends javax.swing.JFrame {
     private void  addRow(History history, DefaultTableModel model){
         SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");  
         SimpleDateFormat timeFormatter = new SimpleDateFormat("HH:mm");  
-
+        
         String date = dateFormatter.format(history.getTime()); 
         String time = timeFormatter.format(history.getTime());
         model.addRow(new Object[]{
-            date, time, history.getTestTitle(), history.getScore(),history.getScore()
+            date, time, history.getTestTitle(), history.getTimeConsuming(),history.getScore()
         });
     }
     private void SetScoreChart(Account acc){
@@ -1785,7 +1827,7 @@ public class Home extends javax.swing.JFrame {
         DefaultCategoryDataset chartData = new DefaultCategoryDataset();
   
         StatisticService ser = new StatisticService();
-        ArrayList<HashMap<Date,Float>> list = ser.getInfoForScoreChart(acc.getId());
+        ArrayList<HashMap<Date,Float>> list = ser.getInfoForScoreChart(acc.getUser().getId());
         Iterator iter = list.iterator();
         while(iter.hasNext()){
             ele = (HashMap<Date, Float>) iter.next();
@@ -1812,11 +1854,11 @@ public class Home extends javax.swing.JFrame {
            StatisticService ser = new StatisticService();
            SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM"); 
            
-           HashMap<Date,Float> hashMap = ser.getInfoForTimeChart(acc.getId());
+           HashMap<Date,Float> hashMap = ser.getInfoForTimeChart(acc.getUser().getId());
            Set<Date> keySet = hashMap.keySet();
            for (Date key : keySet) {
                 chartData.addValue(hashMap.get(key) , "Time per day", dateFormatter.format(key));
-                System.out.println(key + " - " + hashMap.get(key));
+//                System.out.println(key + " - " + hashMap.get(key));
             }
 
            JFreeChart chart = ChartFactory.createLineChart("Stydy time Chart", "Date", "Stydy time", chartData);
@@ -1835,12 +1877,22 @@ public class Home extends javax.swing.JFrame {
     
     public void setContentForStudent(Account acc){
         setImageForLabel(acc.getAvatarUlr(), this.AvatarLabel);
-        setTextForLabel(this.FullNameLabel, acc.getUsername());
+        setTextForLabel(this.FullNameLabel, acc.getUser().getFullName());
         setTextForLabel(this.UserNameLabel, acc.getUsername());
         setTextForLabel(this.LevelLabel, String.valueOf(acc.getUser().getLevel()));
         setTextForLabel(this.Lv1ScoreLabel, String.valueOf(acc.getUser().getScore().getLevel1()));
         setTextForLabel(this.Lv2ScoreLabel, String.valueOf(acc.getUser().getScore().getLevel2()));
         setTextForLabel(this.Lv3ScoreLabel, String.valueOf(acc.getUser().getScore().getLevel3()));
+    }
+    
+    public void updateAcc(){
+        UserService userService = new UserService();
+        this.Acc = (Account)userService.validateLogin(Acc.getUsername(), Acc.getPassword());
+    }
+    
+    public void updateAcc(String newPass){
+        UserService userService = new UserService();
+        this.Acc = (Account)userService.validateLogin(Acc.getUsername(), newPass);
     }
     
     public void setContentForTestList(int level){

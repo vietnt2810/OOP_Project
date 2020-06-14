@@ -34,12 +34,21 @@ public class History {
         this.score = score;
     }
 
-    public History(int userId, int testId, Date time, float score, String title) {
+    public float getTimeConsuming() {
+        return timeConsuming;
+    }
+
+    public void setTimeConsuming(float timeConsuming) {
+        this.timeConsuming = timeConsuming;
+    }
+
+    public History(int userId, int testId, Date time, float score, String title,float timeConsuming) {
         this.userId = userId;
         this.testId = testId;
         this.time = time;
         this.score = score;
         this.testTitle = title;
+        this.timeConsuming = timeConsuming;
     }
     
     public History(int userId, int testId, float score, float timeConsuming) {

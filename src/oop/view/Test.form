@@ -124,8 +124,8 @@
                       <Component id="jScrollPane1" alignment="0" max="32767" attributes="0"/>
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="ExtensionButtonPanel" max="32767" attributes="0"/>
-                          <EmptySpace min="-2" pref="90" max="-2" attributes="0"/>
-                          <Component id="TimerIconLabel" min="-2" pref="78" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="133" max="-2" attributes="0"/>
+                          <Component id="ProgressLabel" min="-2" pref="75" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="TimerLabel" min="-2" pref="86" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="34" max="-2" attributes="0"/>
@@ -146,7 +146,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="TimerLabel" alignment="3" min="-2" pref="51" max="-2" attributes="0"/>
-                          <Component id="TimerIconLabel" alignment="3" min="-2" pref="51" max="-2" attributes="0"/>
+                          <Component id="ProgressLabel" alignment="3" min="-2" pref="51" max="-2" attributes="0"/>
                       </Group>
                       <Component id="ExtensionButtonPanel" min="-2" max="-2" attributes="0"/>
                   </Group>
@@ -176,18 +176,18 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="StartButton" min="-2" pref="124" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
-                      <Component id="RestartButton" min="-2" pref="124" max="-2" attributes="0"/>
+                      <Component id="StopButton" min="-2" pref="124" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="SkipButton" min="-2" pref="119" max="-2" attributes="0"/>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="HintButton" min="-2" pref="119" max="-2" attributes="0"/>
-                      <EmptySpace pref="215" max="32767" attributes="0"/>
+                      <EmptySpace pref="175" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="RestartButton" alignment="0" pref="62" max="32767" attributes="0"/>
+                  <Component id="StopButton" alignment="0" pref="62" max="32767" attributes="0"/>
                   <Component id="SkipButton" alignment="0" max="32767" attributes="0"/>
                   <Component id="StartButton" alignment="0" max="32767" attributes="0"/>
                   <Component id="HintButton" alignment="0" max="32767" attributes="0"/>
@@ -195,7 +195,7 @@
             </DimensionLayout>
           </Layout>
           <SubComponents>
-            <Component class="javax.swing.JButton" name="RestartButton">
+            <Component class="javax.swing.JButton" name="StopButton">
               <Properties>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="e8" green="76" red="2d" type="rgb"/>
@@ -209,7 +209,7 @@
                 </Property>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="RestartButtonActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="StopButtonActionPerformed"/>
               </Events>
             </Component>
             <Component class="javax.swing.JButton" name="SkipButton">
@@ -283,7 +283,7 @@
             <Property name="opaque" type="boolean" value="true"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JLabel" name="TimerIconLabel">
+        <Component class="javax.swing.JLabel" name="ProgressLabel">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="ff" green="ff" red="ff" type="rgb"/>

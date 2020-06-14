@@ -11,23 +11,22 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Dictionary;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import static oop.dao.JDBCConnection.getJDBCConnection;
-import oop.model.History;
 
 /**
  *
  * @author thao
  */
 public class StatisticDao {
-     private Connection conn;
+    private Connection conn;
+    
     public StatisticDao(){
         conn = getJDBCConnection();
     }
+    
     public ArrayList<HashMap<Date,Float>> getInfoForScoreChart(int usrId){
         ArrayList<HashMap<Date,Float>> arr = new ArrayList<HashMap<Date,Float>>();
         HashMap<Date,Float> lv1 = new HashMap<Date,Float>();
@@ -74,7 +73,7 @@ public class StatisticDao {
             prdStatement.setInt(1, usrId);
             rs = prdStatement.executeQuery();
             while(rs.next()){
-                trainingTime.put(rs.getDate("date"), rs.getFloat("totalTime"));
+                trainingTime.put(rs.getDate("date"), rs.getFloat("totalTime")/60);
             }
          } catch (SQLException ex) {
              Logger.getLogger(StatisticDao.class.getName()).log(Level.SEVERE, null, ex);
@@ -102,6 +101,20 @@ public class StatisticDao {
                 avg[i] = rs.getFloat("avgScore");
                 i++;
             }
+         } catch (SQLException ex) {
+             Logger.getLogger(StatisticDao.class.getName()).log(Level.SEVERE, null, ex);
+         }
+        
+        query = "UPDATE user SET level1Score=?, level2Score=?, level3Score=? "
+                + "WHERE id = ?";
+        try {
+            prdStatement = conn.prepareStatement(query);
+            prdStatement.setFloat(1, avg[0]);
+            prdStatement.setFloat(2, avg[1]);
+            prdStatement.setFloat(3, avg[2]);
+            prdStatement.setInt(4, usrId);
+            prdStatement.executeUpdate();
+            
          } catch (SQLException ex) {
              Logger.getLogger(StatisticDao.class.getName()).log(Level.SEVERE, null, ex);
          }

@@ -58,4 +58,8 @@ public class UserService {
         }
         return false;
     }
+    
+    public boolean changePass(int accId, String newPass){
+        return this.userDao.changePass(accId, newPass);
+    }
 }

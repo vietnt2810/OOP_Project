@@ -15,6 +15,7 @@ import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import static oop.dao.JDBCConnection.getJDBCConnection;
+import oop.model.Account;
 import oop.model.History;
 import oop.model.TestLesson;
 
@@ -109,14 +110,16 @@ public class TestDao {
         String query;
         
         try {
-            query = "INSERT INTO test_history(usrId, testId, conpletedDate, score) "
-                    + "VALUES(?,?,?,?)";
+            query = "INSERT INTO test_history(usrId, testId, conpletedDate, score, completeTime) "
+                    + "VALUES(?,?,?,?,?)";
             
             prdStatement = conn.prepareStatement(query);
             prdStatement.setInt(1, history.getUserId());
             prdStatement.setInt(2, history.getTestId());
-            prdStatement.setDate(3, new java.sql.Date(history.getTime().getTime()));
+            prdStatement.setTimestamp(3, new java.sql.Timestamp(history.getTime().getTime()));
+           System.out.println(new java.sql.Timestamp(history.getTime().getTime()));
             prdStatement.setFloat(4, history.getScore());
+             prdStatement.setFloat(5, history.getTimeConsuming());
             
             int affectedRow = prdStatement.executeUpdate();
            
@@ -127,7 +130,7 @@ public class TestDao {
         }
     }
     
-    public ArrayList<History> getHistory(){
+    public ArrayList<History> getHistory(Account acc){
         ArrayList<History> historyList = new ArrayList<History>();
         PreparedStatement prdStatement;
         ResultSet rs;
@@ -137,15 +140,18 @@ public class TestDao {
             query = "SELECT * FROM test_history th "
                     + "INNER JOIN test t "
                     + "ON th.testId = t.id "
-                    + "ORDER BY conpletedDate DESC";
+                    + "WHERE th.usrId = ? "
+                    + "ORDER BY th.id DESC";
+                    
             
             prdStatement = conn.prepareStatement(query);
+            prdStatement.setInt(1, acc.getUser().getId());
             rs = prdStatement.executeQuery();
             
             while(rs.next()){
                 History history = new History(rs.getInt("usrId"), rs.getInt("testId"), 
-                        new Date(rs.getDate("conpletedDate").getTime()), rs.getFloat("score"),
-                        rs.getString("t.testName"));
+                        new Date(rs.getTimestamp("conpletedDate").getTime()), rs.getFloat("score"),
+                        rs.getString("t.testName"), rs.getInt("th.completeTime"));
                 historyList.add(history);
             }
         }catch(SQLException e){

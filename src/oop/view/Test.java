@@ -8,10 +8,13 @@ package oop.view;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import oop.model.Account;
 import oop.model.History;
 import oop.model.TestLesson;
+import oop.service.StatisticService;
 import oop.service.TestService;
 import static oop.utils.Utils.setTextForLabel;
 /**
@@ -32,7 +35,7 @@ public class Test extends javax.swing.JFrame {
     private static Thread t2;
     private static String successString;
     private static Date time;
-    
+    private static boolean stop;
     
     public Test(TestLesson testLesson, Account acc) {
         Test.testlesson = testLesson;
@@ -43,13 +46,13 @@ public class Test extends javax.swing.JFrame {
         this.setLocation(dim.width/2-this.getSize().width/2, dim.height/2-this.getSize().height/2);
         this.setResizable(false);
         setTextForLabel(this.TestNameLabel, testlesson.getName());
-        setTextForLabel(this.TimerIconLabel, "00:00");
+        setTextForLabel(this.ProgressLabel, "00:00");
         setTextForLabel(this.TimerLabel, "/ "+testlesson.getLength()/60 + ":" + testlesson.getLength()%60);
         Test.currentLine = 0;
         Test.currentWordInLine = 0;
         Test.changeLine = false;
         Test.successString = "";
-        
+        Test.stop = false;
     }
 
     /**
@@ -66,12 +69,12 @@ public class Test extends javax.swing.JFrame {
         ResultTextArea = new javax.swing.JTextArea();
         jPanel1 = new javax.swing.JPanel();
         ExtensionButtonPanel = new javax.swing.JPanel();
-        RestartButton = new javax.swing.JButton();
+        StopButton = new javax.swing.JButton();
         SkipButton = new javax.swing.JButton();
         StartButton = new javax.swing.JButton();
         HintButton = new javax.swing.JButton();
         TimerLabel = new javax.swing.JLabel();
-        TimerIconLabel = new javax.swing.JLabel();
+        ProgressLabel = new javax.swing.JLabel();
         jProgressBar1 = new javax.swing.JProgressBar();
         jScrollPane1 = new javax.swing.JScrollPane();
         UserInputTextArea = new javax.swing.JTextArea();
@@ -113,13 +116,13 @@ public class Test extends javax.swing.JFrame {
 
         ExtensionButtonPanel.setBackground(new java.awt.Color(255, 255, 255));
 
-        RestartButton.setBackground(new java.awt.Color(45, 118, 232));
-        RestartButton.setForeground(new java.awt.Color(255, 255, 255));
-        RestartButton.setText("Stop");
-        RestartButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        RestartButton.addActionListener(new java.awt.event.ActionListener() {
+        StopButton.setBackground(new java.awt.Color(45, 118, 232));
+        StopButton.setForeground(new java.awt.Color(255, 255, 255));
+        StopButton.setText("Stop");
+        StopButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        StopButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                RestartButtonActionPerformed(evt);
+                StopButtonActionPerformed(evt);
             }
         });
 
@@ -161,16 +164,16 @@ public class Test extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(StartButton, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(22, 22, 22)
-                .addComponent(RestartButton, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(StopButton, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(SkipButton, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(HintButton, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(215, Short.MAX_VALUE))
+                .addContainerGap(175, Short.MAX_VALUE))
         );
         ExtensionButtonPanelLayout.setVerticalGroup(
             ExtensionButtonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(RestartButton, javax.swing.GroupLayout.DEFAULT_SIZE, 62, Short.MAX_VALUE)
+            .addComponent(StopButton, javax.swing.GroupLayout.DEFAULT_SIZE, 62, Short.MAX_VALUE)
             .addComponent(SkipButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(StartButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(HintButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -185,11 +188,11 @@ public class Test extends javax.swing.JFrame {
         TimerLabel.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         TimerLabel.setOpaque(true);
 
-        TimerIconLabel.setBackground(new java.awt.Color(255, 255, 255));
-        TimerIconLabel.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
-        TimerIconLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        TimerIconLabel.setText("00:00");
-        TimerIconLabel.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
+        ProgressLabel.setBackground(new java.awt.Color(255, 255, 255));
+        ProgressLabel.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
+        ProgressLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        ProgressLabel.setText("00:00");
+        ProgressLabel.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
 
         jProgressBar1.setBackground(new java.awt.Color(255, 255, 255));
         jProgressBar1.setForeground(new java.awt.Color(45, 118, 232));
@@ -246,8 +249,8 @@ public class Test extends javax.swing.JFrame {
                     .addComponent(jScrollPane1)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(ExtensionButtonPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(90, 90, 90)
-                        .addComponent(TimerIconLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(133, 133, 133)
+                        .addComponent(ProgressLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(TimerLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(34, 34, 34))
@@ -264,7 +267,7 @@ public class Test extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(TimerLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(TimerIconLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(ProgressLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(ExtensionButtonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(28, 28, 28)
                 .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -301,9 +304,11 @@ public class Test extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void RestartButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RestartButtonActionPerformed
+    private void StopButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StopButtonActionPerformed
         Test.testlesson.setPlayCompleted(true);
-    }//GEN-LAST:event_RestartButtonActionPerformed
+        Test.t2.interrupt();
+        Test.stop = true;
+    }//GEN-LAST:event_StopButtonActionPerformed
 
     private void SkipButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SkipButtonActionPerformed
        if(Test.t2 == null)   return;
@@ -316,17 +321,19 @@ public class Test extends javax.swing.JFrame {
     }//GEN-LAST:event_formWindowClosing
 
     private void StartButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_StartButtonActionPerformed
-//        System.out.println(Test.t);
-//        System.out.println(Test.t2);
+        System.out.println(Test.t);
+        System.out.println(Test.t2);
+        
         if(Test.t != null || Test.t2 != null) return;
         
         Test.time = new Date();
-        
+        System.out.println(Test.time);
         Test.t = new Thread(new Runnable(){
             @Override
             public void run(){
                 Test.testlesson.setPlayCompleted(false);
                 Test.testlesson.play(Test.testlesson.getMp3Url());
+                Test.t = null;
             }
         });
         Test.t.start();
@@ -334,10 +341,16 @@ public class Test extends javax.swing.JFrame {
         Test.t2 = new Thread(new Runnable(){
             @Override
             public void run(){
+                long t_ = 15000;
                 for(int i = 0; i < Test.testlesson.getScript().size(); i++){
                     while(true){
                         try {
-                            Thread.sleep(15000);
+                            if(Test.testlesson.getAudioClip() != null){
+                                t_ = (Test.testlesson.getAudioClip().getMicrosecondLength() - Test.testlesson.getAudioClip().getMicrosecondPosition())/1000;
+                                t_ = t_ < 15000 ? t_-1000 : 15000;
+//                                System.out.println(t_);
+                            }
+                            Thread.sleep(t_);
                             Test.testlesson.getAudioClip().setMicrosecondPosition(15000000*Test.currentLine);
                         } catch (InterruptedException ex) {
                             if(Test.changeLine && Test.currentLine < Test.testlesson.getScript().size() - 1){
@@ -349,34 +362,59 @@ public class Test extends javax.swing.JFrame {
                             }else{
                                 //reset global variable
                                 Test.t.interrupt();
-                                Test.t = null;
-                                Test.t2 = null;
+                                
                                 Test.testlesson.setPlayCompleted(true);
                                 Test.currentLine = 0;
                                 Test.currentWordInLine = 0;
                                 Test.changeLine = false;
                                 
                                 // caculate score
-                                Date cur = new Date();
-                                float time = (cur.getTime() - Test.time.getTime())/1000;
-                                float score = 10*(11 - (float)Test.testlesson.getLength()/time);
-                                if(score < 0)   score = -1 * score;
-                                if(score > 100) score = 100;
-                                Test.saveHistory(score, time);
-                                JOptionPane.showMessageDialog(Test.this,"You finished the test with " + score,"Good jobs", JOptionPane.OK_OPTION);
+                                if(!Test.stop){
+                                    Date cur = new Date();
+                                    float time = (cur.getTime() - Test.time.getTime())/1000;
+                                    System.out.println(time);
+                                    float score = 10*(11 - (float)time/Test.testlesson.getLength());
+                                    if(score < 0)   score = -1 * score;
+                                    if(score > 100) score = 100;
+                                    Test.saveHistory(score, time);
+                                    JOptionPane.showMessageDialog(Test.this,"You finished the test with " + score,"Good jobs", JOptionPane.OK_OPTION);
+                                }else{
+                                    Test.stop = false;
+                                }
+                                Test.t2 = null;
+                                }
                             }
                         }    
                     }
                 }
-                  
+        });
+        t2.start();
+        
+        Thread t3 = new Thread(new Runnable(){
+            @Override
+            public void run(){
+                while(true){
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    long second = Test.testlesson.getAudioClip().getMicrosecondPosition()/1000000;
+                    String str = second/60 + ":" + second%60;
+                    setTextForLabel(ProgressLabel, str);
+                }
             }
         });
-        t2.start();  
+        
+        t3.start();
     }//GEN-LAST:event_StartButtonActionPerformed
     private static void saveHistory(float score, float time){
-        History history = new History(Test.acc.getId(), Test.testlesson.getId(), score, time);
+        History history = new History(Test.acc.getUser().getId(), Test.testlesson.getId(), score, time);
+        System.out.println(history.getTime());
         TestService testService = new TestService();
         testService.saveHistory(history);
+        StatisticService st = new StatisticService();
+        st.calculateAvgScore(Test.acc.getUser().getId());
     }
     private void UserInputTextAreaInputMethodTextChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_UserInputTextAreaInputMethodTextChanged
 //        System.out.println(this.UserInputTextArea.getText());
@@ -449,13 +487,13 @@ public class Test extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel ExtensionButtonPanel;
     private javax.swing.JButton HintButton;
-    private javax.swing.JButton RestartButton;
+    private javax.swing.JLabel ProgressLabel;
     private javax.swing.JPanel ResultPanel;
     private javax.swing.JTextArea ResultTextArea;
     private javax.swing.JButton SkipButton;
     private javax.swing.JButton StartButton;
+    private javax.swing.JButton StopButton;
     private javax.swing.JLabel TestNameLabel;
-    private javax.swing.JLabel TimerIconLabel;
     private javax.swing.JLabel TimerLabel;
     private javax.swing.JTextArea UserInputTextArea;
     private javax.swing.JPanel jPanel1;

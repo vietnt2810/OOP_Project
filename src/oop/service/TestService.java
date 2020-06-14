@@ -10,6 +10,7 @@ import java.util.Iterator;
 import javax.swing.DefaultListModel;
 import javax.swing.ListModel;
 import oop.dao.TestDao;
+import oop.model.Account;
 import oop.model.History;
 import oop.model.TestLesson;
 
@@ -48,7 +49,7 @@ public class TestService {
         return affectedRow > 0;
     }
     
-    public ArrayList<History> getHistory(){
-        return testDao.getHistory();
+    public ArrayList<History> getHistory(Account acc){
+        return testDao.getHistory(acc);
     }
 }

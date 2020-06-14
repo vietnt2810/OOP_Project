@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import static oop.dao.JDBCConnection.getJDBCConnection;
@@ -196,4 +197,33 @@ public class UserDao {
         }
         return false;
     }
+    
+     public boolean changePass(int accId, String newPass){
+        Connection conn = null;
+        PreparedStatement prdStatement;
+        String query;
+        int result;
+        try{
+            conn = getJDBCConnection();
+            
+            query = "UPDATE account SET password = ? WHERE id=?";     
+            prdStatement = conn.prepareStatement(query);
+            prdStatement.setString(1,newPass);
+            prdStatement.setInt(2,accId);
+            result = prdStatement.executeUpdate();
+            
+            return result > 0;
+        }catch(SQLException e){
+            System.out.println("update password fail" + e.getMessage());
+            System.out.println(e.getStackTrace());
+            return false;
+        }finally{
+             try {
+                conn.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(UserDao.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+     }
+    
 }
