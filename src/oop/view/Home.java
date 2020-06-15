@@ -10,15 +10,20 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Set;
+import javax.swing.Box;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -36,6 +41,7 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.ui.Align;
 
 
 
@@ -1646,13 +1652,15 @@ public class Home extends javax.swing.JFrame {
         UserService us = new UserService();
         oldPass = (String) JOptionPane.showInputDialog(this, "Old password",
         "",JOptionPane.PLAIN_MESSAGE);  
-        if(!oldPass.isEmpty()){
+        if(!oldPass.isEmpty() || !oldPass.contains(" ")){
             Account a = us.validateLogin(Acc.getUsername(), oldPass);
             if(a == null){   
                 JOptionPane.showMessageDialog(this.rootPane, "Wrong password","ERROR", JOptionPane.ERROR_MESSAGE);
                 return;
-            }
-            
+            }           
+        }else{
+            JOptionPane.showMessageDialog(this.rootPane, "Invalid password","ERROR", JOptionPane.ERROR_MESSAGE);
+                return;
         }
         newPass = (String) JOptionPane.showInputDialog(this, "New password",
             "",JOptionPane.PLAIN_MESSAGE);
@@ -1685,7 +1693,41 @@ public class Home extends javax.swing.JFrame {
     }//GEN-LAST:event_EditInfoButtonMouseExited
 
     private void EditInfoButtonMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_EditInfoButtonMousePressed
-        // TODO add your handling code here:
+        JPanel panel = new JPanel( new GridLayout(2, 2) );
+        JLabel firstLabel = new JLabel("First Name");
+        JLabel lastLabel = new JLabel("Last Name");
+        firstLabel.setHorizontalAlignment(Align.CENTER);
+        lastLabel.setHorizontalAlignment(Align.CENTER);
+        panel.add(firstLabel);
+        
+        JTextField firstName = new JTextField(15);
+        firstName.setText(Acc.getUser().getFirstName());
+        panel.add( firstName );
+        panel.add(lastLabel);
+        JTextField lastName = new JTextField(15);
+        lastName.setText(Acc.getUser().getLastName());
+        panel.add( lastName );
+
+        int result = JOptionPane.showConfirmDialog(
+            null, // use your JFrame here
+            panel,
+            "Use a Panel",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.PLAIN_MESSAGE);
+        
+        if(result == JOptionPane.YES_OPTION){
+            Acc.getUser().setFirstName(firstName.getText());
+            Acc.getUser().setLastName(lastName.getText());
+            UserService us = new UserService();
+            if(us.updateUser(Acc)){
+                this.setContentForStudent(Acc);
+                JOptionPane.showMessageDialog(this.rootPane, "Updating succeeded","INFORMATION", JOptionPane.INFORMATION_MESSAGE);
+            }else{
+                JOptionPane.showMessageDialog(this.rootPane, "Updating failed","INFORMATION", JOptionPane.ERROR_MESSAGE);
+            }
+        }else{
+            return;
+        }
     }//GEN-LAST:event_EditInfoButtonMousePressed
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
@@ -1827,10 +1869,11 @@ public class Home extends javax.swing.JFrame {
         DefaultCategoryDataset chartData = new DefaultCategoryDataset();
   
         StatisticService ser = new StatisticService();
-        ArrayList<HashMap<Date,Float>> list = ser.getInfoForScoreChart(acc.getUser().getId());
+        ArrayList<LinkedHashMap<Date,Float>> list = ser.getInfoForScoreChart(acc.getUser().getId());
         Iterator iter = list.iterator();
         while(iter.hasNext()){
-            ele = (HashMap<Date, Float>) iter.next();
+            ele = (LinkedHashMap<Date, Float>) iter.next();
+            System.out.println(ele);
             Set<Date> keySet = ele.keySet();
             for (Date key : keySet) {
                 chartData.addValue(ele.get(key) , "Level " + i, dateFormatter.format(key));         
@@ -1854,7 +1897,7 @@ public class Home extends javax.swing.JFrame {
            StatisticService ser = new StatisticService();
            SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM"); 
            
-           HashMap<Date,Float> hashMap = ser.getInfoForTimeChart(acc.getUser().getId());
+           LinkedHashMap<Date,Float> hashMap = ser.getInfoForTimeChart(acc.getUser().getId());
            Set<Date> keySet = hashMap.keySet();
            for (Date key : keySet) {
                 chartData.addValue(hashMap.get(key) , "Time per day", dateFormatter.format(key));

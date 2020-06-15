@@ -62,4 +62,8 @@ public class UserService {
     public boolean changePass(int accId, String newPass){
         return this.userDao.changePass(accId, newPass);
     }
+    
+    public boolean updateUser(Account acc){
+        return userDao.updateUser(acc);
+    }
 }

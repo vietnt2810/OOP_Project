@@ -8,6 +8,7 @@ package oop.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import oop.dao.StatisticDao;
 
@@ -22,15 +23,19 @@ public class StatisticService {
        this.statisticDao = new StatisticDao();
    }
     
-   public ArrayList<HashMap<Date,Float>> getInfoForScoreChart(int usrId){
+   public ArrayList<LinkedHashMap<Date,Float>> getInfoForScoreChart(int usrId){
      return statisticDao.getInfoForScoreChart(usrId);
    }
    
-   public HashMap<Date,Float> getInfoForTimeChart(int usrId){
+   public LinkedHashMap<Date,Float> getInfoForTimeChart(int usrId){
        return statisticDao.getInfoForTimeChart(usrId);
    }
    
    public void calculateAvgScore(int usrId){
        statisticDao.calculateAvgScore(usrId);
+   }
+   
+   public void createAvgScoreForDay(int usrId){
+       statisticDao.createAvgScoreForDay(usrId);
    }
 }

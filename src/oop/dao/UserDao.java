@@ -45,7 +45,7 @@ public class UserDao {
             
             if(rs.next()){
                 avg = new AvgScore(rs.getFloat("usr.level1Score"),rs.getFloat("usr.level2Score"),rs.getFloat("usr.level3Score"));
-                usr = new User(rs.getInt("usr.id"), rs.getString("usr.lastName"), rs.getString("usr.lastName"), rs.getInt("usr.usrLevel"), avg);
+                usr = new User(rs.getInt("usr.id"), rs.getString("usr.firstName"), rs.getString("usr.lastName"), rs.getInt("usr.usrLevel"), avg);
                 avtUrl = rs.getString("acc.avatarUrl");
                 accId = rs.getInt("acc.id");
                 return  acc = new Account(accId, username,password, usr, avtUrl);
@@ -84,7 +84,7 @@ public class UserDao {
             rs.next();
             if(rs.getInt("number")>0){
                 avg = new AvgScore(rs.getFloat("usr.level1Score"),rs.getFloat("usr.level2Score"),rs.getFloat("usr.level3Score"));
-                usr = new User(rs.getInt("usr.id"), rs.getString("usr.lastName"), rs.getString("usr.lastName"), rs.getInt("usr.usrLevel"), avg);
+                usr = new User(rs.getInt("usr.id"), rs.getString("usr.firstName"), rs.getString("usr.lastName"), rs.getInt("usr.usrLevel"), avg);
                 String password = rs.getString("acc.password");
                 accId = rs.getInt("acc.id");
                 if(usr == null)  return null;
@@ -224,6 +224,35 @@ public class UserDao {
                 Logger.getLogger(UserDao.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-     }
+    }
     
+    public boolean updateUser(Account acc){
+        Connection conn = null;
+        PreparedStatement prdStatement;
+        String query;
+        int result;
+        try{
+            conn = getJDBCConnection();
+            
+            query = "UPDATE user SET firstName = ?, lastName = ? WHERE id=?";     
+            prdStatement = conn.prepareStatement(query);
+            prdStatement.setString(1,acc.getUser().getFirstName());
+            prdStatement.setString(2,acc.getUser().getLastName());
+            prdStatement.setInt(3,acc.getUser().getId());
+            result = prdStatement.executeUpdate();
+            
+            return result > 0;
+        }catch(SQLException e){
+            System.out.println("update password fail" + e.getMessage());
+            System.out.println(e.getStackTrace());
+            return false;
+        }finally{
+             try {
+                conn.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(UserDao.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+     
 }

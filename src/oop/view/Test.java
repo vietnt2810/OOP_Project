@@ -378,6 +378,8 @@ public class Test extends javax.swing.JFrame {
                                     if(score > 100) score = 100;
                                     Test.saveHistory(score, time);
                                     JOptionPane.showMessageDialog(Test.this,"You finished the test with " + score,"Good jobs", JOptionPane.OK_OPTION);
+                                    StatisticService ts = new StatisticService();
+                                    ts.createAvgScoreForDay(Test.acc.getUser().getId());
                                 }else{
                                     Test.stop = false;
                                 }
