@@ -807,7 +807,7 @@ public class Home extends javax.swing.JFrame {
 
         Lv1TestInfo.setEditable(false);
         Lv1TestInfo.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        Lv1TestInfo.setText("In this level, you will hear many test section which length is 15 second. You will be hinted when hitting hard noun .");
+        Lv1TestInfo.setText("In this level, users can use HINT.");
         Lv1TestInfo.setAutoscrolls(false);
         Lv1TestInfo.setFocusable(false);
         jScrollPane2.setViewportView(Lv1TestInfo);
@@ -866,7 +866,7 @@ public class Home extends javax.swing.JFrame {
 
         jEditorPane2.setEditable(false);
         jEditorPane2.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jEditorPane2.setText("In this level, you will hear many test section which length is 15 second. You will be hinted when hitting hard noun .");
+        jEditorPane2.setText("In this level, users cannot use HINT and the section's length is less than or equal to 15 seconds.");
         jEditorPane2.setAutoscrolls(false);
         jEditorPane2.setFocusable(false);
         Lv2TestInfo.setViewportView(jEditorPane2);
@@ -912,7 +912,7 @@ public class Home extends javax.swing.JFrame {
 
         jEditorPane3.setEditable(false);
         jEditorPane3.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jEditorPane3.setText("In this level, you will hear many test section which length is 15 second. You will be hinted when hitting hard noun .");
+        jEditorPane3.setText("In this level, you cannot use HINT and the section's length is more than 20 seconds.");
         jEditorPane3.setAutoscrolls(false);
         jEditorPane3.setFocusable(false);
         Lv3TestInfo.setViewportView(jEditorPane3);
