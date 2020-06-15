@@ -1815,11 +1815,13 @@ public class Home extends javax.swing.JFrame {
  
     public void getTestDetail(){
         TestService testService = new TestService();
-        String testName = this.TestListList.getSelectedValue().toString();
-        this.testLesson = testService.getTestDetail(testName);
-        setTextForLabel(this.TestNameLabel, testName);
-        setTextForLabel(this.TestLengthLabel, String.valueOf(testLesson.getLength()));
-        this.SummaryTestText.setText(testLesson.getDemoScript());
+        if(!this.TestListList.isSelectionEmpty()){
+            String testName = this.TestListList.getSelectedValue().toString();
+            this.testLesson = testService.getTestDetail(testName);
+            setTextForLabel(this.TestNameLabel, testName);
+            setTextForLabel(this.TestLengthLabel, String.valueOf(testLesson.getLength()));
+            this.SummaryTestText.setText(testLesson.getDemoScript());
+        }
     }
     public void setColor(JPanel panel)
     {

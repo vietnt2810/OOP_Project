@@ -36,9 +36,10 @@ public class Test extends javax.swing.JFrame {
     private static String successString;
     private static Date time;
     private static boolean stop;
-    
+    private static int interval;
     public Test(TestLesson testLesson, Account acc) {
         Test.testlesson = testLesson;
+        Test.interval = testLesson.getLevel() < 3 ? 15000 : 25000;
         Test.acc = acc;
         initComponents();
         //set window ra giua screen
@@ -53,6 +54,16 @@ public class Test extends javax.swing.JFrame {
         Test.changeLine = false;
         Test.successString = "";
         Test.stop = false;
+        if(Test.t2 != null) {
+            Test.stop = true;
+            Test.t2.stop();
+        }
+        if(Test.t != null) {
+            Test.stop = true;
+            Test.t.stop();
+        }
+        Test.t2 = null;
+        Test.t = null;
     }
 
     /**
@@ -325,7 +336,7 @@ public class Test extends javax.swing.JFrame {
         System.out.println(Test.t2);
         
         if(Test.t != null || Test.t2 != null) return;
-        
+        Test.stop = false;
         Test.time = new Date();
         System.out.println(Test.time);
         Test.t = new Thread(new Runnable(){
@@ -347,8 +358,8 @@ public class Test extends javax.swing.JFrame {
                         try {
                             if(Test.testlesson.getAudioClip() != null){
                                 t_ = (Test.testlesson.getAudioClip().getMicrosecondLength() - Test.testlesson.getAudioClip().getMicrosecondPosition())/1000;
-                                t_ = t_ < 15000 ? t_-1000 : 15000;
-//                                System.out.println(t_);
+                                t_ = t_ <  15000 ? t_-1000 :  15000;
+                                System.out.println(t_);
                             }
                             Thread.sleep(t_);
                             Test.testlesson.getAudioClip().setMicrosecondPosition(15000000*Test.currentLine);
@@ -361,7 +372,8 @@ public class Test extends javax.swing.JFrame {
                                 break;
                             }else{
                                 //reset global variable
-                                Test.t.interrupt();
+                                if(Test.t != null)
+                                    Test.t.interrupt();
                                 
                                 Test.testlesson.setPlayCompleted(true);
                                 Test.currentLine = 0;
@@ -383,7 +395,14 @@ public class Test extends javax.swing.JFrame {
                                 }else{
                                     Test.stop = false;
                                 }
-                                Test.t2 = null;
+                                if(Test.t2 != null){
+                                    System.out.println("reset t2");
+                                    Thread tmp = Test.t2;
+                                    Test.t2 = null;
+                                    Test.stop = true;
+                                    tmp.stop();
+                                }
+                                
                                 }
                             }
                         }    
@@ -401,9 +420,11 @@ public class Test extends javax.swing.JFrame {
                     } catch (InterruptedException ex) {
                         Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    long second = Test.testlesson.getAudioClip().getMicrosecondPosition()/1000000;
-                    String str = second/60 + ":" + second%60;
-                    setTextForLabel(ProgressLabel, str);
+                    if(Test.testlesson.getAudioClip() != null){
+                        long second = Test.testlesson.getAudioClip().getMicrosecondPosition()/1000000;
+                        String str = second/60 + ":" + second%60;
+                        setTextForLabel(ProgressLabel, str);
+                    }
                 }
             }
         });
@@ -504,4 +525,8 @@ public class Test extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     // End of variables declaration//GEN-END:variables
+
+    private void If(boolean b) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }
