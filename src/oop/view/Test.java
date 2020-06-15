@@ -86,11 +86,9 @@ public class Test extends javax.swing.JFrame {
         HintButton = new javax.swing.JButton();
         TimerLabel = new javax.swing.JLabel();
         ProgressLabel = new javax.swing.JLabel();
-        jProgressBar1 = new javax.swing.JProgressBar();
         jScrollPane1 = new javax.swing.JScrollPane();
         UserInputTextArea = new javax.swing.JTextArea();
         TestNameLabel = new javax.swing.JLabel();
-        jProgressBar2 = new javax.swing.JProgressBar();
 
         setAlwaysOnTop(true);
         setBackground(new java.awt.Color(255, 255, 255));
@@ -205,14 +203,6 @@ public class Test extends javax.swing.JFrame {
         ProgressLabel.setText("00:00");
         ProgressLabel.setCursor(new java.awt.Cursor(java.awt.Cursor.WAIT_CURSOR));
 
-        jProgressBar1.setBackground(new java.awt.Color(255, 255, 255));
-        jProgressBar1.setForeground(new java.awt.Color(45, 118, 232));
-        jProgressBar1.setToolTipText("Overall test time");
-        jProgressBar1.setValue(10);
-        jProgressBar1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(45, 118, 232)));
-        jProgressBar1.setOpaque(true);
-        jProgressBar1.setStringPainted(true);
-
         jScrollPane1.setBackground(new java.awt.Color(255, 255, 255));
 
         UserInputTextArea.setColumns(20);
@@ -241,14 +231,6 @@ public class Test extends javax.swing.JFrame {
         TestNameLabel.setText("Test 1");
         TestNameLabel.setOpaque(true);
 
-        jProgressBar2.setBackground(new java.awt.Color(255, 255, 255));
-        jProgressBar2.setForeground(new java.awt.Color(45, 118, 232));
-        jProgressBar2.setToolTipText("Lession time");
-        jProgressBar2.setValue(50);
-        jProgressBar2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(45, 118, 232)));
-        jProgressBar2.setOpaque(true);
-        jProgressBar2.setStringPainted(true);
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -256,7 +238,6 @@ public class Test extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jProgressBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jScrollPane1)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(ExtensionButtonPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -265,7 +246,6 @@ public class Test extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(TimerLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(34, 34, 34))
-                    .addComponent(jProgressBar2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(TestNameLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -280,12 +260,8 @@ public class Test extends javax.swing.JFrame {
                         .addComponent(TimerLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(ProgressLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(ExtensionButtonPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(28, 28, 28)
-                .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jProgressBar2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 215, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 308, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -520,8 +496,6 @@ public class Test extends javax.swing.JFrame {
     private javax.swing.JLabel TimerLabel;
     private javax.swing.JTextArea UserInputTextArea;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JProgressBar jProgressBar1;
-    private javax.swing.JProgressBar jProgressBar2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     // End of variables declaration//GEN-END:variables
